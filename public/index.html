@@ -349,6 +349,10 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
 .bl .dot { background: #fff; animation: none; }
 .bctl { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; border-top: 1px solid var(--edge); }
 .champ { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--accent-ink); font: 800 1.2rem/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; padding: 12px 20px; margin-bottom: 14px; clip-path: var(--cut); }
+.music { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: inline-flex; align-items: center; gap: 8px; background: var(--panel); color: var(--text); border: 1px solid var(--edge); padding: 10px 14px; font: 700 .85rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+.music:hover { border-color: var(--accent); }
+.music[aria-pressed="false"] { color: var(--muted); }
+.music[aria-pressed="false"] span { text-decoration: line-through; }
 </style>
 </head>
 <body>
@@ -469,6 +473,7 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     </form>
   </footer>
 </div>
+<button class="music" id="musicBtn" type="button" aria-pressed="false" aria-label="Música de fundo"><i aria-hidden="true">🎃</i><span>Música</span></button>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -976,6 +981,70 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
   if (S.adminToken) api("GET", "/api/admin/check", null, true).then(function (r) { if (r && r.admin) { S.admin = true; renderAll(); } else { S.adminToken = ""; ls("del", "spookywatch.admin"); } }, function () { });
   renderBoard(); renderBand(); renderTeams(); renderFeed(); renderBracket(); renderLive(); renderWho(); buildForm();
   poll();
+})();
+</script>
+<script>
+/* música de fundo: melodia original de Halloween gerada no navegador (Web Audio), em volume baixo */
+(function () {
+  "use strict";
+  var KEY = "spookywatch.music", VOL = 0.07, STEP = 0.34;
+  var Ctx = window.AudioContext || window.webkitAudioContext, btn = document.getElementById("musicBtn");
+  if (!Ctx) { btn.hidden = true; return; }
+  var ac, master, timer, nextT, step = 0, on = false;
+  var N = { A2: 110, E3: 164.81, A3: 220, E4: 329.63, G4s: 415.3, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46 };
+  var MEL = ["E5", 0, "C5", 0, "A4", "C5", "B4", 0, "G4s", 0, "B4", "E5", "E5", 0, "C5", 0, "A4", "C5", "D5", "F5", "E5", 0, 0, 0];
+  var BASS = { 0: "A2", 6: "E3", 12: "A2", 18: "E3" };
+  function ls(op, v) { try { return op === "get" ? localStorage.getItem(KEY) : localStorage.setItem(KEY, v); } catch (e) { return null; } }
+  function pluck(f, t, len, vol, type) {
+    var o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + len + 0.05);
+  }
+  function build() {
+    ac = new Ctx();
+    master = ac.createGain(); master.gain.value = 0;
+    var lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;
+    var d = ac.createDelay(1); d.delayTime.value = 0.42; var fb = ac.createGain(); fb.gain.value = 0.38;
+    var wet = ac.createGain(); wet.gain.value = 0.45;
+    master.connect(lp); lp.connect(ac.destination);
+    lp.connect(d); d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(ac.destination);
+    [N.A2, N.A2 * 1.004, N.E3].forEach(function (f, i) { // zumbido grave
+      var o = ac.createOscillator(), g = ac.createGain(); o.type = i === 2 ? "triangle" : "sine"; o.frequency.value = f; g.gain.value = 0.22;
+      var l = ac.createOscillator(), lg = ac.createGain(); l.frequency.value = 0.08 + i * 0.03; lg.gain.value = 0.1; l.connect(lg); lg.connect(g.gain);
+      o.connect(g); g.connect(master); o.start(); l.start();
+    });
+  }
+  function tick() {
+    while (nextT < ac.currentTime + 0.4) {
+      var i = step % MEL.length;
+      if (MEL[i]) { pluck(N[MEL[i]], nextT, 1.1, 0.5, "triangle"); pluck(N[MEL[i]] * 2, nextT, 0.5, 0.08, "sine"); }
+      if (BASS[i]) pluck(N[BASS[i]], nextT, 1.8, 0.45, "sine");
+      nextT += STEP; step++;
+    }
+  }
+  function setBtn() { btn.setAttribute("aria-pressed", on ? "true" : "false"); btn.setAttribute("aria-label", on ? "Desligar música de fundo" : "Ligar música de fundo"); }
+  function start() {
+    if (!ac) build();
+    ac.resume(); on = true; setBtn();
+    master.gain.cancelScheduledValues(ac.currentTime); master.gain.setTargetAtTime(VOL, ac.currentTime, 0.8);
+    if (!timer) { nextT = ac.currentTime + 0.1; timer = setInterval(tick, 120); }
+  }
+  function stop() {
+    on = false; setBtn();
+    if (!ac) return;
+    master.gain.setTargetAtTime(0, ac.currentTime, 0.2);
+    clearInterval(timer); timer = null;
+    setTimeout(function () { if (!on && ac.state === "running") ac.suspend(); }, 900);
+  }
+  btn.addEventListener("click", function (e) { e.stopPropagation(); if (on) { ls("set", "off"); stop(); } else { ls("set", "on"); start(); } });
+  function first() { // navegadores só liberam som depois de um toque/clique
+    document.removeEventListener("pointerdown", first); document.removeEventListener("keydown", first);
+    if (ls("get") !== "off" && !on) start();
+  }
+  document.addEventListener("pointerdown", first); document.addEventListener("keydown", first);
+  document.addEventListener("visibilitychange", function () { if (!ac || !on) return; if (document.hidden) ac.suspend(); else ac.resume(); });
+  setBtn();
 })();
 </script>
 </body>
