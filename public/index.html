@@ -144,7 +144,7 @@ h2 { font: 900 2.4rem/1 var(--f-display); text-transform: uppercase; letter-spac
 .form { background: var(--panel); border: 1px solid var(--edge); padding: 22px; display: grid; gap: 22px; min-width: 0; }
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .fld { display: grid; gap: 6px; min-width: 0; }
-.fld input[type="text"], .fld select, .cfg input[type="text"], .cfg input[type="number"], .cfg input[type="datetime-local"] { width: 100%; background: var(--ink); border: 1px solid var(--edge); border-bottom: 2px solid var(--edge); padding: 11px 12px; border-radius: 0; min-width: 0; }
+.fld input[type="text"], .fld input[type="password"], .fld select, .cfg input[type="text"], .cfg input[type="number"], .cfg input[type="datetime-local"] { width: 100%; background: var(--ink); border: 1px solid var(--edge); border-bottom: 2px solid var(--edge); padding: 11px 12px; border-radius: 0; min-width: 0; }
 .fld input:focus, .fld select:focus { border-bottom-color: var(--accent); outline: none; }
 .fld input[aria-invalid="true"] { border-color: var(--bad); }
 .hint { color: var(--muted); font-size: .8rem; }
@@ -321,6 +321,34 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
 .dc-top { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; background: var(--panel); border: 1px solid var(--edge); color: var(--text); text-decoration: none; font: 700 .85rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; transition: transform .3s var(--ease), border-color .3s, background .3s; }
 .dc-top:hover { border-color: var(--blurple); background: var(--panel-2); transform: translateY(-2px); }
 .dc-top .dc-ico { color: var(--blurple); }
+/* ---------- chaveamento e ao vivo ---------- */
+.livebar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: rgba(255,97,115,.12); border: 1px solid var(--bad); border-left-width: 5px; padding: 10px 14px; margin-bottom: 8px; }
+.livebar .dot { background: var(--bad); box-shadow: 0 0 0 0 rgba(255,97,115,.6); }
+.livebar .lv { font-weight: 600; }
+.livebar .linkbtn { margin-left: auto; }
+.bracket-sec { margin-bottom: 44px; scroll-margin-top: 16px; }
+.badm { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.rounds { display: flex; gap: 32px; overflow-x: auto; padding: 4px 18px 14px 4px; }
+.rcol { display: flex; flex-direction: column; gap: 10px; min-width: 236px; flex: none; }
+.rbody { display: flex; flex-direction: column; flex: 1; }
+.pair, .single { flex: 1; display: flex; flex-direction: column; justify-content: space-around; position: relative; gap: 14px; padding-block: 7px; }
+.single { justify-content: center; }
+.pair::after { content: ""; position: absolute; right: -16px; top: 25%; bottom: 25%; width: 16px; border: 2px solid var(--edge); border-left: 0; pointer-events: none; }
+.match { background: var(--panel); border: 1px solid var(--edge); position: relative; }
+.match.inn::before { content: ""; position: absolute; left: -17px; top: 50%; width: 16px; border-top: 2px solid var(--edge); }
+.match.live { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
+.bt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-left: 5px solid var(--c, var(--edge)); min-height: 44px; }
+.bt + .bt { border-top: 1px solid var(--edge); }
+.btag { font: 800 1.1rem/1 var(--f-display); min-width: 3ch; }
+.bname { font-size: .88rem; color: var(--muted); overflow-wrap: anywhere; }
+.bt.win { background: var(--panel-2); }
+.bt.win .bname { color: var(--text); font-weight: 600; }
+.bt.lose { opacity: .45; }
+.bt.tbd { color: var(--muted); }
+.bl { display: flex; align-items: center; gap: 8px; background: var(--bad); color: #fff; font: 700 .75rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; padding: 6px 12px; }
+.bl .dot { background: #fff; animation: none; }
+.bctl { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; border-top: 1px solid var(--edge); }
+.champ { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--accent-ink); font: 800 1.2rem/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; padding: 12px 20px; margin-bottom: 14px; clip-path: var(--cut); }
 </style>
 </head>
 <body>
@@ -331,6 +359,8 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     <div class="brand"><span aria-hidden="true">🎃</span>Spookywatch</div>
     <div class="bar-r"><div class="live label" id="presence"><span class="dot" id="presenceDot"></span><span id="presenceTxt">Ao vivo</span></div><div class="who-chip" id="whoChip" hidden><span id="whoTxt"></span><button class="linkbtn" id="logoutBtn" type="button">Sair</button></div><a class="dc-top" href="https://discord.gg/Zu63wCXgyM" target="_blank" rel="noopener noreferrer" aria-label="Entrar no servidor do Discord"><span class="dc-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H11l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="8" cy="11.5" r="1.3" fill="currentColor"/><circle cx="12" cy="11.5" r="1.3" fill="currentColor"/><circle cx="16" cy="11.5" r="1.3" fill="currentColor"/></svg><img src="discord-logo.svg" alt="" hidden onload="this.hidden=false;this.parentNode.classList.add('has-logo')" onerror="this.remove()"></span><span>Discord</span></a></div>
   </header>
+
+  <div class="livebar" id="liveBar" role="status" aria-live="polite" hidden></div>
 
   <section class="hero">
     <div>
@@ -363,6 +393,12 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     <div class="tile"><span class="label">Resultados dos grupos</span><b class="date num"><span>26</span><small>out · seg</small></b></div>
     <div class="tile"><span class="label">Torneio</span><b class="date num"><span id="bStartD">31</span><small id="bStartM">out · sáb</small></b></div>
     <div class="tile prize"><span class="label">Premiação</span><b class="prize-n">5 gift cards</b><p>A organização entra em contato com a equipe para fazer a transferência em até 7 dias úteis.</p></div>
+  </section>
+
+  <section class="bracket-sec" id="chaveamento" aria-label="Chaveamento">
+    <div class="sec-head"><h2>Chaveamento</h2><span class="label" id="bracketMeta"></span></div>
+    <div class="badm" id="bracketAdmin" hidden></div>
+    <div id="bracketBox"></div>
   </section>
 
   <div class="cols">
@@ -401,7 +437,7 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     <div class="reg-intro">
       <span class="label">Inscrição</span>
       <h2 style="margin-top:10px" id="formTitle">Seu time</h2>
-      <p id="formLead">Entre com seu nome e seu @ do Discord. Você vira o capitão, responde pela equipe e é chamado por esse @. Um time por pessoa, e a formação pode ser editada até o início do torneio.</p>
+      <p id="formLead">Crie sua conta de capitão com nome, @ do Discord e uma senha. Você responde pela equipe e é chamado por esse @. Um time por pessoa, e só quem sabe a senha edita ou cancela a inscrição.</p>
     </div>
     <div id="formBox"></div>
   </section>
@@ -449,7 +485,8 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
   function ls(op, k, v) { try { if (op === "get") return localStorage.getItem(k); if (op === "set") localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { return null; } return null; }
   function loadJSON(k) { try { return JSON.parse(ls("get", k) || "null"); } catch (e) { return null; } }
 
-  var S = { teamSeen: {}, feedSeen: null, slotSeen: null, teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: loadJSON("spookywatch.profile"), mine: loadJSON("spookywatch.mine"), admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
+  var S = { teamSeen: {}, feedSeen: null, slotSeen: null, teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: (function () { var c = loadJSON("spookywatch.cap"); return c && c.token ? { name: c.name, discord: c.discord } : null; })(), capToken: (loadJSON("spookywatch.cap") || {}).token || "", bracket: null, authTab: "login", admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
+  ls("del", "spookywatch.profile"); ls("del", "spookywatch.mine"); // formato antigo, sem senha
   var $ = function (id) { return document.getElementById(id); };
 
   function h(tag, attrs) {
@@ -501,7 +538,12 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     $("closesTxt").textContent = (Date.now() <= closesMs() ? "Inscrições até " : "Inscrições encerradas em ") + c.long;
   }
   function startMs() { var t = Date.parse(S.cfg.startsAt || DEFAULT_START); return isNaN(t) ? Date.parse(DEFAULT_START) : t; }
-  function myTeam() { return S.mine ? S.teams.filter(function (t) { return t.id === S.mine.id; })[0] || null : null; }
+  function myTeam() { if (!S.profile) return null; var d = S.profile.discord.toLowerCase(); return S.teams.filter(function (t) { return t.owner && t.owner.discord.toLowerCase() === d; })[0] || null; }
+  function saveCap(c) {
+    if (c) { S.profile = { name: c.name, discord: c.discord }; S.capToken = c.token; ls("set", "spookywatch.cap", JSON.stringify(c)); }
+    else { S.profile = null; S.capToken = ""; S.authTab = "login"; ls("del", "spookywatch.cap"); }
+  }
+  function sessionExpired() { if (!S.profile) return; saveCap(null); toast("Sua sessão expirou. Entre de novo."); renderWho(); renderAll(); }
 
   var REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   function setNum(el, to) {
@@ -520,8 +562,10 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
   function api(method, path, body, admin) {
     var headers = { "content-type": "application/json" };
     if (admin && S.adminToken) headers["x-admin-token"] = S.adminToken;
+    if (S.capToken) headers["x-captain-token"] = S.capToken;
     return fetch(path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined, cache: "no-store" }).then(function (r) {
       return r.json().catch(function () { return null; }).then(function (data) {
+        if (!r.ok && data && data.code === "captain_auth" && !admin) sessionExpired();
         if (!r.ok) { var err = new Error((data && data.error) || "Falha de conexão."); err.errors = data && data.errors; err.status = r.status; throw err; }
         return data;
       });
@@ -563,6 +607,13 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     api("DELETE", "/api/teams/" + id, {}, true).then(function () { toast("Time removido."); poll(); }, function (e) { toast(e.message); });
   }
 
+  var resetting = null;
+  function resetCaptain(dc) {
+    if (resetting !== dc) { resetting = dc; renderTeams(); clearTimeout(resetCaptain.t); resetCaptain.t = setTimeout(function () { resetting = null; renderTeams(); }, 4000); return; }
+    resetting = null;
+    api("DELETE", "/api/admin/captain/" + encodeURIComponent(dc), {}, true).then(function () { toast("Senha resetada. O capitão pode criar uma nova conta com o mesmo @."); poll(); }, function (e) { toast(e.message); });
+  }
+
   /* vagas */
   function renderBoard() {
     var list = S.teams, max = maxTeams(), conf = list.filter(function (t) { return S.conf[t.id]; }).length;
@@ -595,7 +646,7 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     var prevSeen = S.teamSeen; S.teamSeen = {};
     list.forEach(function (t, i) {
       S.teamSeen[t.id] = 1;
-      var confirmed = !!S.conf[t.id], mine = S.mine && t.id === S.mine.id;
+      var confirmed = !!S.conf[t.id], mine = !!(S.profile && t.owner && t.owner.discord.toLowerCase() === S.profile.discord.toLowerCase());
       var roster = h("ul", { class: "roster" });
       t.players.forEach(function (p) {
         roster.appendChild(h("li", null, icon(p.role), h("div", { class: "who" }, h("div", { class: "nick", text: p.battletag.split("#")[0] }), h("div", { class: "bt", text: p.battletag }))));
@@ -606,6 +657,7 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
       if (S.admin) {
         foot.appendChild(h("button", { class: "btn main sm", type: "button", onclick: function () { confirmTeam(t.id, !confirmed); }, text: confirmed ? "Desfazer" : "Confirmar" }));
         foot.appendChild(h("button", { class: "btn ghost sm", type: "button", style: "color:var(--bad)", onclick: function () { removeTeam(t.id); }, text: removing === t.id ? "Tocar de novo para remover" : "Remover" }));
+        if (t.owner) foot.appendChild(h("button", { class: "btn ghost sm", type: "button", onclick: function () { resetCaptain(t.owner.discord); }, text: resetting === t.owner.discord ? "Tocar de novo para resetar" : "Resetar senha" }));
       }
       var owner = t.owner || {};
       box.appendChild(h("article", { class: "team" + (prevSeen[t.id] ? "" : " enter") + (S.fresh[t.id] ? " fresh" : ""), style: "--c:" + safeColor(t.color) + ";--i:" + Math.min(i, 10) },
@@ -638,8 +690,8 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     if (S.profile) $("whoTxt").textContent = S.profile.name + " · @" + S.profile.discord;
   }
   function logout() {
-    S.profile = null; ls("del", "spookywatch.profile");
-    renderWho(); renderAll();
+    if (S.capToken) api("POST", "/api/captain/logout", {}).catch(function () { });
+    saveCap(null); renderWho(); renderAll();
   }
   $("logoutBtn").addEventListener("click", logout);
 
@@ -696,25 +748,35 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     fillForm(mine);
   }
   function buildLogin(box) {
+    box.textContent = ""; F = {};
+    var signup = S.authTab === "signup";
     var form = h("form", { class: "form", id: "loginCard", novalidate: true });
     var err = h("div", { class: "errs", role: "alert", hidden: true });
-    form.appendChild(h("p", { class: "hint", style: "font-size:.95rem", text: "Diga seu nome e o seu @ do Discord. Você vira o capitão do time e a organização te chama por esse @. Não pedimos senha." }));
-    form.appendChild(h("div", { class: "grid2" }, fld("l-name", "Seu nome", { maxlength: "24", placeholder: "Ex.: Tuco", autocomplete: "name" }), fld("l-dc", "Seu @ do Discord", { maxlength: "33", placeholder: "@usuario" })));
+    form.appendChild(h("div", { class: "actions" },
+      h("button", { class: "btn sm " + (signup ? "ghost" : "main"), type: "button", text: "Já tenho conta", onclick: function () { S.authTab = "login"; buildLogin(box); } }),
+      h("button", { class: "btn sm " + (signup ? "main" : "ghost"), type: "button", text: "Criar conta de capitão", onclick: function () { S.authTab = "signup"; buildLogin(box); } })));
+    form.appendChild(h("p", { class: "hint", style: "font-size:.95rem", text: signup ? "Crie a senha do capitão. Ela protege o seu time: só quem sabe a senha edita ou cancela a inscrição." : "Entre com o @ do Discord e a senha que você criou." }));
+    if (signup) form.appendChild(fld("l-name", "Seu nome", { maxlength: "24", placeholder: "Ex.: Tuco", autocomplete: "name" }));
+    form.appendChild(fld("l-dc", "Seu @ do Discord", { maxlength: "33", placeholder: "@usuario", autocomplete: "username" }));
+    form.appendChild(fld("l-pw", "Senha", { type: "password", maxlength: "72", autocomplete: signup ? "new-password" : "current-password" }, signup ? "De 6 a 72 caracteres." : null));
+    if (signup) form.appendChild(fld("l-pw2", "Repita a senha", { type: "password", maxlength: "72", autocomplete: "new-password" }));
     form.appendChild(err);
-    form.appendChild(h("div", { class: "actions" }, h("button", { class: "btn main", type: "submit", text: "Entrar" })));
+    var go = h("button", { class: "btn main", type: "submit", text: signup ? "Criar conta e entrar" : "Entrar" });
+    form.appendChild(h("div", { class: "actions" }, go));
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
-      var name = F["l-name"].value.trim(), dc = F["l-dc"].value.trim();
-      var errs = [];
-      if (name.length < 2) errs.push("Informe o seu nome.");
+      var name = signup ? F["l-name"].value.trim() : "", dc = F["l-dc"].value.trim(), pw = F["l-pw"].value, errs = [];
+      if (signup && name.length < 2) errs.push("Informe o seu nome.");
       if (!DC.test(dc)) errs.push("O @ do Discord deve ter de 2 a 32 letras, números, ponto ou sublinhado.");
-      F["l-name"].setAttribute("aria-invalid", name.length < 2 ? "true" : "false");
-      F["l-dc"].setAttribute("aria-invalid", DC.test(dc) ? "false" : "true");
+      if (signup && (pw.length < 6 || pw.length > 72)) errs.push("A senha precisa ter de 6 a 72 caracteres.");
+      else if (!signup && !pw) errs.push("Informe a senha.");
+      if (signup && pw !== F["l-pw2"].value) errs.push("As senhas não são iguais.");
       err.textContent = ""; errs.forEach(function (m) { err.appendChild(h("p", { text: m })); }); err.hidden = !errs.length;
       if (errs.length) return;
-      S.profile = { name: name.slice(0, 24), discord: dc.replace(/^@/, "") };
-      ls("set", "spookywatch.profile", JSON.stringify(S.profile));
-      renderWho(); renderAll(); toast("Você entrou como " + S.profile.name + ".");
+      go.disabled = true;
+      api("POST", signup ? "/api/captain/register" : "/api/captain/login", { name: name, discord: dc.replace(/^@/, ""), password: pw }).then(function (r) {
+        saveCap(r); renderWho(); renderAll(); toast("Você entrou como " + r.name + ".");
+      }, function (e) { err.textContent = ""; err.appendChild(h("p", { text: e.message })); err.hidden = false; go.disabled = false; });
     });
     box.appendChild(form);
   }
@@ -743,7 +805,7 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     var name = F["f-name"].value.trim(), tag = F["f-tag"].value.trim();
     if (name.length < 3) { errs.push("Dê um nome ao time com pelo menos 3 caracteres."); bad.push("f-name"); }
     if (tag.length < 2) { errs.push("A sigla precisa de 2 a 4 caracteres."); bad.push("f-tag"); }
-    var seen = {}, others = {}, mineId = S.mine && S.mine.id;
+    var seen = {}, others = {}, mineT = myTeam(), mineId = mineT && mineT.id;
     S.teams.forEach(function (t) {
       if (t.id === mineId) return;
       if (t.owner && t.owner.discord.toLowerCase() === S.profile.discord.toLowerCase()) errs.push("O @" + S.profile.discord + " já é capitão de outro time.");
@@ -767,8 +829,8 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     var editing = !!myTeam();
     S.saving = true; F.submit.disabled = true;
     var req;
-    if (editing) { doc.editKey = S.mine.key; req = api("PUT", "/api/teams/" + S.mine.id, doc); }
-    else { var key = newKey(); doc.editKey = key; req = api("POST", "/api/teams", doc).then(function (r) { if (r && r.id) { S.mine = { id: r.id, key: key }; ls("set", "spookywatch.mine", JSON.stringify(S.mine)); } return r; }); }
+    if (editing) req = api("PUT", "/api/teams/" + myTeam().id, doc);
+    else req = api("POST", "/api/teams", doc);
     req.then(function () { toast(editing ? "Alterações salvas." : "Time inscrito. Boa sorte!"); return poll(); }, function (e) { showErrors(e.errors && e.errors.length ? e.errors : [e.message]); })
       .then(function () { S.saving = false; if (F.submit) F.submit.disabled = false; });
   }
@@ -776,9 +838,9 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
   function onCancel() {
     if (!cancelArmed) { cancelArmed = true; F.cancel.textContent = "Tocar de novo para cancelar"; setTimeout(function () { cancelArmed = false; if (F.cancel) F.cancel.textContent = "Cancelar inscrição"; }, 4000); return; }
     cancelArmed = false;
-    api("DELETE", "/api/teams/" + S.mine.id, { editKey: S.mine.key }).then(function () {
+    api("DELETE", "/api/teams/" + myTeam().id, {}).then(function () {
       toast("Inscrição cancelada. A vaga foi liberada.");
-      S.mine = null; ls("del", "spookywatch.mine"); return poll();
+      return poll();
     }, function (e) { toast(e.message); });
   }
 
@@ -816,13 +878,70 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     }, function () { S.adminToken = ""; toast("Não foi possível verificar agora."); });
   });
 
+  /* chaveamento e combate ao vivo */
+  var RN = ["Final", "Semifinais", "Quartas de final", "Oitavas de final"], armed = null;
+  function bAct(method, path, body, msg, key) {
+    if (key && armed !== key) { armed = key; toast("Toque de novo para confirmar."); clearTimeout(bAct.t); bAct.t = setTimeout(function () { armed = null; }, 4000); return; }
+    armed = null;
+    api(method, path, body, true).then(function () { if (msg) toast(msg); return poll(); }, function (e) { toast(e.message); });
+  }
+  function bTeam(m, side, br, r) {
+    var id = m[side], t = id && br.teams[id];
+    return h("div", { class: "bt" + (!id ? " tbd" : "") + (m.winner && m.winner === id ? " win" : "") + (m.winner && id && m.winner !== id ? " lose" : ""), style: t ? "--c:" + safeColor(t.color) : null },
+      h("b", { class: "btag", text: t ? t.tag : "—" }), h("span", { class: "bname", text: t ? t.name : (r === 0 ? "BYE" : "A definir") }));
+  }
+  function bMatch(m, br, r) {
+    var path = "/api/admin/bracket/match/" + m.id;
+    var card = h("div", { class: "match" + (m.live ? " live" : "") + (r > 0 ? " inn" : "") }, m.live ? h("div", { class: "bl" }, h("i", { class: "dot" }), "Ao vivo") : null, bTeam(m, "a", br, r), bTeam(m, "b", br, r));
+    if (S.admin && m.a && m.b) {
+      var ctl = h("div", { class: "bctl" });
+      if (m.winner) ctl.appendChild(h("button", { class: "btn ghost sm", type: "button", text: "Desfazer resultado", onclick: function () { bAct("POST", path, { winner: null }, "Resultado desfeito.", m.id + "u"); } }));
+      else {
+        ctl.appendChild(h("button", { class: "btn " + (m.live ? "ghost" : "main") + " sm", type: "button", text: m.live ? "Encerrar ao vivo" : "Colocar ao vivo", onclick: function () { bAct("POST", path, { live: !m.live }, m.live ? "Combate encerrado." : "Combate ao vivo!"); } }));
+        ["a", "b"].forEach(function (side) { ctl.appendChild(h("button", { class: "btn ghost sm", type: "button", text: "Venceu: " + br.teams[m[side]].tag, onclick: function () { bAct("POST", path, { winner: m[side] }, "Resultado salvo.", m.id + side); } })); });
+      }
+      card.appendChild(ctl);
+    }
+    return card;
+  }
+  function renderBracket() {
+    var box = $("bracketBox"), adm = $("bracketAdmin"), br = S.bracket;
+    box.textContent = ""; adm.textContent = ""; adm.hidden = !S.admin;
+    $("bracketMeta").textContent = br ? Object.keys(br.teams).length + " times" : "";
+    if (S.admin) {
+      var conf = S.teams.filter(function (t) { return S.conf[t.id]; }).length;
+      adm.appendChild(h("button", { class: "btn main sm", type: "button", disabled: conf < 2, text: br ? "Sortear de novo" : "Gerar chaveamento (" + conf + " confirmados)", onclick: function () { bAct("POST", "/api/admin/bracket", {}, "Chaveamento gerado.", br ? "gen" : null); } }));
+      if (br) adm.appendChild(h("button", { class: "btn ghost sm", type: "button", style: "color:var(--bad)", text: "Apagar chaveamento", onclick: function () { bAct("DELETE", "/api/admin/bracket", {}, "Chaveamento apagado.", "del"); } }));
+    }
+    if (!br) { box.appendChild(h("div", { class: "empty-state" }, h("b", { text: "Chaveamento ainda não gerado" }), h("span", { text: "A organização sorteia os confrontos entre os times confirmados e eles aparecem aqui." }))); return; }
+    var fin = br.rounds[br.rounds.length - 1][0];
+    if (fin.winner && br.teams[fin.winner]) box.appendChild(h("div", { class: "champ" }, "Campeão: " + br.teams[fin.winner].name));
+    var cols = h("div", { class: "rounds" });
+    br.rounds.forEach(function (round, r) {
+      var body = h("div", { class: "rbody" });
+      if (round.length > 1) for (var i = 0; i < round.length; i += 2) body.appendChild(h("div", { class: "pair" }, bMatch(round[i], br, r), bMatch(round[i + 1], br, r)));
+      else body.appendChild(h("div", { class: "single" }, bMatch(round[0], br, r)));
+      cols.appendChild(h("div", { class: "rcol" }, h("div", { class: "label", text: RN[br.rounds.length - 1 - r] || "Rodada " + (r + 1) }), body));
+    });
+    box.appendChild(cols);
+  }
+  function renderLive() {
+    var bar = $("liveBar"), ms = [];
+    if (S.bracket) S.bracket.rounds.forEach(function (rd) { rd.forEach(function (m) { if (m.live && m.a && m.b) ms.push(m); }); });
+    bar.hidden = !ms.length; bar.textContent = "";
+    if (!ms.length) return;
+    bar.appendChild(h("i", { class: "dot" })); bar.appendChild(h("b", { class: "label", text: "Combate ao vivo" }));
+    ms.forEach(function (m) { bar.appendChild(h("span", { class: "lv", text: S.bracket.teams[m.a].name + " × " + S.bracket.teams[m.b].name })); });
+    bar.appendChild(h("a", { class: "linkbtn", href: "#chaveamento", text: "Ver chaveamento" }));
+  }
+
   /* estado ao vivo */
   var raf = 0;
   function renderAll() {
     if (raf) return;
     raf = requestAnimationFrame(function () {
       raf = 0;
-      renderBoard(); renderBand(); renderTeams(); renderFeed(); renderAdmin(); renderWho(); tickCount();
+      renderBoard(); renderBand(); renderTeams(); renderFeed(); renderBracket(); renderLive(); renderAdmin(); renderWho(); tickCount();
       if (S.formMode !== desiredMode()) buildForm();
       else if (S.formMode === "edit" && !S.formFilled) fillForm(myTeam());
     });
@@ -833,15 +952,14 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
     if (sig === S.sig) return;
     S.sig = sig;
     var prev = {}; S.teams.forEach(function (t) { prev[t.id] = 1; });
-    S.teams = d.teams || []; S.conf = d.confirmed || {}; S.cfg = d.cfg || S.cfg;
+    S.teams = d.teams || []; S.conf = d.confirmed || {}; S.cfg = d.cfg || S.cfg; S.bracket = d.bracket || null;
     if (S.ready) S.teams.forEach(function (t) {
       if (prev[t.id]) return;
       S.fresh[t.id] = 1;
-      if (!(S.mine && S.mine.id === t.id)) toast("[" + t.tag + "] " + t.name + " acabou de se inscrever");
+      var mt = myTeam(); if (!(mt && mt.id === t.id)) toast("[" + t.tag + "] " + t.name + " acabou de se inscrever");
       setTimeout(function () { delete S.fresh[t.id]; renderAll(); }, 7000);
     });
     S.ready = true;
-    if (S.mine && !myTeam()) { S.mine = null; ls("del", "spookywatch.mine"); }
     renderAll();
   }
   function poll() {
@@ -852,8 +970,9 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
   setInterval(function () { tickCount(); if (S.ready && S.formMode !== desiredMode()) renderAll(); document.querySelectorAll("[data-ts]").forEach(function (n) { n.textContent = rel(Number(n.getAttribute("data-ts"))); }); }, 1000);
   setInterval(function () { if (!document.hidden) poll(); }, POLL_MS);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });
+  if (S.capToken) api("GET", "/api/captain/me").catch(function () { });
   if (S.adminToken) api("GET", "/api/admin/check", null, true).then(function (r) { if (r && r.admin) { S.admin = true; renderAll(); } else { S.adminToken = ""; ls("del", "spookywatch.admin"); } }, function () { });
-  renderBoard(); renderBand(); renderTeams(); renderFeed(); renderWho(); buildForm();
+  renderBoard(); renderBand(); renderTeams(); renderFeed(); renderBracket(); renderLive(); renderWho(); buildForm();
   poll();
 })();
 </script>

@@ -4,10 +4,11 @@ Site de inscrição do torneio 5v5 de Overwatch, com times ao vivo.
 
 ## Como funciona
 
-- Quem quer inscrever um time "entra" com o **nome** e o **@ do Discord**. Não há senha nem ligação com o Discord: é só uma identificação. Essa pessoa vira o **capitão**, e a organização a chama por esse @.
+- Quem quer inscrever um time **cria uma conta de capitão**: nome, **@ do Discord** e **senha** (6 a 72 caracteres). A senha é guardada só como hash (scrypt). Depois é só entrar com o @ e a senha, em qualquer aparelho.
 - Um @ só pode ser capitão de um time.
 - O time aparece na página de todo mundo em poucos segundos (a página consulta a API a cada 4 s).
-- O capitão edita ou cancela o time até o início do torneio, pelo mesmo navegador em que se inscreveu.
+- O capitão edita ou cancela o time até o início do torneio. Só ele (logado) ou a organização pode mexer no time. Cinco senhas erradas seguidas bloqueiam o @ por 10 minutos.
+- Não há verificação com o Discord: quem criar a conta primeiro com um @ fica com ele. Se alguém esquecer a senha ou usarem o @ de outra pessoa, a organização clica em **Resetar senha** no cartão do time e o capitão cria a conta de novo.
 
 ## Variável de ambiente (Netlify)
 
@@ -44,7 +45,14 @@ A faixa de datas do site mostra: inscrições até o prazo, resultados dos grupo
 
 - `public/index.html`: o site inteiro.
 - `netlify/functions/api.mjs`: API em `/api/*`. Guarda tudo no Netlify Blobs e valida de novo no servidor.
-- Cada time recebe uma chave secreta guardada no navegador de quem se inscreveu. Só quem tem essa chave edita ou cancela o time. A organização edita qualquer um com o token.
+- Contas de capitão ficam em `cap/*` e sessões (30 dias) em `sess/*` no Netlify Blobs. Times criados antes das senhas passam a ser do capitão que criar conta com o mesmo @.
+
+## Chaveamento e combate ao vivo
+
+- Com o acesso da organização, na seção **Chaveamento** aparece **Gerar chaveamento**. Ele sorteia os times **confirmados** em eliminação simples (potência de 2; quando falta time, os "byes" avançam sozinhos). **Sortear de novo** refaz tudo; **Apagar chaveamento** limpa.
+- Em cada confronto pronto, a organização tem **Colocar ao vivo** / **Encerrar ao vivo** e **Venceu: TAG** (toque duas vezes para confirmar). O vencedor avança sozinho; corrigir um resultado limpa o que dependia dele.
+- Enquanto há confronto ao vivo, todo mundo vê uma faixa vermelha "Combate ao vivo" no topo e o selo AO VIVO no confronto.
+- O chaveamento guarda uma cópia de tag, nome e cor dos times: remover um time depois do sorteio não quebra a chave.
 
 ## Botão do Discord
 
