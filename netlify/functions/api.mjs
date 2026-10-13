@@ -10,7 +10,12 @@ const COLORS = ["#ff9d1c", "#3fb6ff", "#ff6173", "#3ddc97", "#b78cff", "#ffd447"
 const ROLES = ["tank", "dps", "dps", "sup", "sup"];
 const BT = /^[^\s#@]{3,24}#\d{3,8}$/;
 const DC = /^[A-Za-z0-9_.]{2,32}$/;
-const DEFAULTS = { maxTeams: 16, open: true, startsAt: "2026-10-31T20:00:00-03:00" };
+const DEFAULTS = {
+  maxTeams: 16,
+  open: true,
+  startsAt: "2026-10-31T20:00:00-03:00",
+  closesAt: "2026-10-24T23:59:00-03:00", // prazo das inscrições: até o fim do dia 24
+};
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -122,6 +127,8 @@ export async function handle(req, st) {
       if (body.website) return json({ ok: true }); // isca para robôs
       const all = await loadAll(st);
       if (!all.cfg.open) return json({ error: "As inscrições estão encerradas." }, 403);
+      const closes = Date.parse(all.cfg.closesAt);
+      if (!isNaN(closes) && Date.now() > closes) return json({ error: "O prazo de inscrição terminou." }, 403);
       if (all.teams.length >= all.cfg.maxTeams) return json({ error: "Todas as vagas foram preenchidas." }, 409);
       const editKey = clean(body.editKey, 80);
       if (editKey.length < 16) return json({ error: "Pedido inválido." }, 400);
@@ -164,10 +171,12 @@ export async function handle(req, st) {
       if (!isAdmin(req)) return json({ error: "Acesso negado." }, 401);
       const max = Math.max(2, Math.min(64, Number(body.maxTeams) || DEFAULTS.maxTeams));
       const starts = new Date(body.startsAt);
+      const closes = new Date(body.closesAt);
       await st.setJSON("config", {
         maxTeams: Math.floor(max),
         open: body.open !== false,
         startsAt: isNaN(starts) ? DEFAULTS.startsAt : starts.toISOString(),
+        closesAt: isNaN(closes) ? DEFAULTS.closesAt : closes.toISOString(),
       });
       return json({ ok: true });
     }

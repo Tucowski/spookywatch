@@ -209,6 +209,31 @@ img { max-width: 100%; }
 .prow { grid-template-columns: 110px minmax(0, 1fr); }
 #loginCard { max-width: 560px; }
 @media (max-width: 560px) { .prow { grid-template-columns: minmax(0, 1fr); } }
+
+.ban-chip { display: inline-flex; align-items: center; background: rgba(255,97,115,.14); border: 1px solid var(--bad); color: var(--bad); font: 700 .95rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; padding: 12px 18px; clip-path: var(--cut); }
+.closes { margin-top: 12px; }
+.band { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.7fr); gap: 12px; margin-bottom: 44px; }
+.tile { background: var(--panel); border: 1px solid var(--edge); border-bottom: 3px solid var(--accent); padding: 16px 18px 14px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.tile .date { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-weight: 400; }
+.tile .date span { font: 900 3.4rem/.9 var(--f-display); }
+.tile .date small { font: 600 1rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.tile.prize { background: var(--accent); border-color: var(--accent); border-bottom-color: #ffd07a; color: var(--accent-ink); clip-path: polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px)); }
+.tile.prize .label { color: rgba(26,17,0,.7); }
+.prize-n { font: 900 2.8rem/.95 var(--f-display); text-transform: uppercase; letter-spacing: .01em; }
+.tile.prize p { font-weight: 500; max-width: 46ch; }
+.rules li.ban { background: rgba(255,97,115,.12); border-left: 4px solid var(--bad); padding: 10px 12px; }
+.rules li.ban b { color: var(--bad); }
+.side { position: static; }
+@media (max-width: 960px) {
+  .band { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tile.prize { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .tile { padding: 12px 12px 10px; }
+  .tile .date span { font-size: 2.6rem; }
+  .tile .date small { font-size: .8rem; }
+  .prize-n { font-size: 2.3rem; }
+}
 </style>
 </head>
 <body>
@@ -228,6 +253,7 @@ img { max-width: 100%; }
       <div class="count num" id="count" aria-label="Contagem regressiva para o início"></div>
       <div class="ctas">
         <a class="btn main" href="#inscricao">Inscrever meu time</a>
+        <span class="ban-chip">XIM proibido</span>
       </div>
     </div>
     <aside class="board" aria-label="Vagas">
@@ -240,7 +266,15 @@ img { max-width: 100%; }
         <span><i class="dot" style="animation:none"></i> Confirmado</span>
         <span id="confirmedN"></span>
       </div>
+      <p class="label closes" id="closesTxt"></p>
     </aside>
+  </section>
+
+  <section class="band" aria-label="Calendário e premiação">
+    <div class="tile"><span class="label">Inscrições até</span><b class="date num"><span id="bClosD">24</span><small id="bClosM">out · sáb</small></b></div>
+    <div class="tile"><span class="label">Resultados dos grupos</span><b class="date num"><span>26</span><small>out · seg</small></b></div>
+    <div class="tile"><span class="label">Torneio</span><b class="date num"><span id="bStartD">31</span><small id="bStartM">out · sáb</small></b></div>
+    <div class="tile prize"><span class="label">Premiação</span><b class="prize-n">5 gift cards</b><p>A organização entra em contato com a equipe para fazer a transferência em até 7 dias úteis.</p></div>
   </section>
 
   <div class="cols">
@@ -265,10 +299,10 @@ img { max-width: 100%; }
         <div class="card-h"><span class="chan">Regulamento</span></div>
         <div class="card-b">
           <ul class="rules">
-            <li><b>Formato</b><span>16 times, eliminatória simples. Melhor de 3, final melhor de 5.</span></li>
+            <li class="ban"><b>XIM</b><span>Proibido o uso de XIM.</span></li>
             <li><b>Time</b><span>1 tank, 2 DPS, 2 suporte e 1 reserva opcional.</span></li>
             <li><b>Contas</b><span>Cada BattleTag entra em um único time.</span></li>
-            <li><b>Check-in</b><span>30 minutos antes. A organização chama o capitão pelo @ do Discord informado.</span></li>
+            <li><b>Capitão</b><span>Quem inscreve o time é chamado pelo @ do Discord informado.</span></li>
           </ul>
         </div>
       </section>
@@ -295,6 +329,7 @@ img { max-width: 100%; }
         <div class="fld"><label class="label" for="cfg-max">Vagas</label><input type="number" id="cfg-max" min="2" max="64" step="1" value="16"></div>
         <div class="fld"><label class="label" for="cfg-start">Início do torneio</label><input type="datetime-local" id="cfg-start"></div>
       </div>
+      <div class="fld"><label class="label" for="cfg-close">Inscrições até</label><input type="datetime-local" id="cfg-close"></div>
       <label class="check"><input type="checkbox" id="cfg-open" checked> Inscrições abertas</label>
       <div class="actions"><button class="btn main sm" type="submit" id="cfgSave">Salvar painel</button></div>
     </form>
@@ -317,6 +352,8 @@ img { max-width: 100%; }
   var RANKS = ["Bronze", "Prata", "Ouro", "Platina", "Diamante", "Mestre", "Grão-Mestre", "Campeão"];
   var COLORS = ["#ff9d1c", "#3fb6ff", "#ff6173", "#3ddc97", "#b78cff", "#ffd447", "#ff6fd8", "#7be0e0"];
   var DEFAULT_START = "2026-10-31T20:00:00-03:00";
+  var DEFAULT_CLOSE = "2026-10-24T23:59:00-03:00";
+  var TZ = "America/Sao_Paulo";
   var BT = /^[^\s#@]{3,24}#\d{3,8}$/;
   var DC = /^@?[A-Za-z0-9_.]{2,32}$/;
   var POLL_MS = 4000;
@@ -363,7 +400,18 @@ img { max-width: 100%; }
   }
   function safeColor(c) { return COLORS.indexOf(c) >= 0 ? c : COLORS[0]; }
   function maxTeams() { return Math.max(2, Math.min(64, Number(S.cfg.maxTeams) || 16)); }
-  function isOpen() { return S.cfg.open !== false; }
+  function closesMs() { var t = Date.parse(S.cfg.closesAt || DEFAULT_CLOSE); return isNaN(t) ? Date.parse(DEFAULT_CLOSE) : t; }
+  function isOpen() { return S.cfg.open !== false && Date.now() <= closesMs(); }
+  function dayParts(ms) {
+    var o = function (opt) { return new Date(ms).toLocaleDateString("pt-BR", Object.assign({ timeZone: TZ }, opt)).replace(".", ""); };
+    return { d: o({ day: "2-digit" }), m: o({ month: "short" }), w: o({ weekday: "short" }), long: o({ day: "numeric", month: "long" }) };
+  }
+  function renderBand() {
+    var c = dayParts(closesMs()), t = dayParts(startMs());
+    $("bClosD").textContent = c.d; $("bClosM").textContent = c.m + " · " + c.w;
+    $("bStartD").textContent = t.d; $("bStartM").textContent = t.m + " · " + t.w;
+    $("closesTxt").textContent = (Date.now() <= closesMs() ? "Inscrições até " : "Inscrições encerradas em ") + c.long;
+  }
   function startMs() { var t = Date.parse(S.cfg.startsAt || DEFAULT_START); return isNaN(t) ? Date.parse(DEFAULT_START) : t; }
   function myTeam() { return S.mine ? S.teams.filter(function (t) { return t.id === S.mine.id; })[0] || null : null; }
 
@@ -620,14 +668,17 @@ img { max-width: 100%; }
     if (!S.admin || renderAdmin.done) return;
     renderAdmin.done = true;
     $("cfg-max").value = maxTeams();
-    $("cfg-open").checked = isOpen();
+    $("cfg-open").checked = S.cfg.open !== false;
+    var dc = new Date(closesMs()); dc.setMinutes(dc.getMinutes() - dc.getTimezoneOffset());
+    $("cfg-close").value = dc.toISOString().slice(0, 16);
     var d = new Date(startMs()); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     $("cfg-start").value = d.toISOString().slice(0, 16);
   }
   $("cfgForm").addEventListener("submit", function (e) {
     e.preventDefault();
     var st = new Date($("cfg-start").value);
-    var cfg = { maxTeams: Math.max(2, Math.min(64, Number($("cfg-max").value) || 16)), open: $("cfg-open").checked, startsAt: isNaN(st) ? DEFAULT_START : st.toISOString() };
+    var cl = new Date($("cfg-close").value);
+    var cfg = { maxTeams: Math.max(2, Math.min(64, Number($("cfg-max").value) || 16)), open: $("cfg-open").checked, startsAt: isNaN(st) ? DEFAULT_START : st.toISOString(), closesAt: isNaN(cl) ? DEFAULT_CLOSE : cl.toISOString() };
     $("cfgSave").disabled = true;
     api("PUT", "/api/admin/config", cfg, true).then(function () { toast("Painel salvo para todos."); return poll(); }, function (e2) { toast(e2.message); }).then(function () { $("cfgSave").disabled = false; });
   });
@@ -650,7 +701,7 @@ img { max-width: 100%; }
     if (raf) return;
     raf = requestAnimationFrame(function () {
       raf = 0;
-      renderBoard(); renderTeams(); renderFeed(); renderAdmin(); renderWho(); tickCount();
+      renderBoard(); renderBand(); renderTeams(); renderFeed(); renderAdmin(); renderWho(); tickCount();
       if (S.formMode !== desiredMode()) buildForm();
       else if (S.formMode === "edit" && !S.formFilled) fillForm(myTeam());
     });
@@ -677,11 +728,11 @@ img { max-width: 100%; }
   }
 
   tickCount();
-  setInterval(function () { tickCount(); document.querySelectorAll("[data-ts]").forEach(function (n) { n.textContent = rel(Number(n.getAttribute("data-ts"))); }); }, 1000);
+  setInterval(function () { tickCount(); if (S.ready && S.formMode !== desiredMode()) renderAll(); document.querySelectorAll("[data-ts]").forEach(function (n) { n.textContent = rel(Number(n.getAttribute("data-ts"))); }); }, 1000);
   setInterval(function () { if (!document.hidden) poll(); }, POLL_MS);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });
   if (S.adminToken) api("GET", "/api/admin/check", null, true).then(function (r) { if (r && r.admin) { S.admin = true; renderAll(); } else { S.adminToken = ""; ls("del", "spookywatch.admin"); } }, function () { });
-  renderBoard(); renderTeams(); renderFeed(); renderWho(); buildForm();
+  renderBoard(); renderBand(); renderTeams(); renderFeed(); renderWho(); buildForm();
   poll();
 })();
 </script>

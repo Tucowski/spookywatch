@@ -34,9 +34,11 @@ npx netlify-cli deploy --prod
 
 ## Acesso da organização
 
-No rodapé do site, **Acesso da organização**, entre com o `ADMIN_TOKEN`. Aparecem os botões **Confirmar** e **Remover** nos cartões e o painel para trocar número de vagas, data de início e abrir ou fechar inscrições.
+No rodapé do site, **Acesso da organização**, entre com o `ADMIN_TOKEN`. Aparecem os botões **Confirmar** e **Remover** nos cartões e o painel para trocar número de vagas, data de início, prazo das inscrições e abrir ou fechar inscrições.
 
-Valores padrão: 16 vagas, início em 31/10/2026 às 20h (horário de Brasília), inscrições abertas.
+Valores padrão: 16 vagas, inscrições até 24/10/2026 às 23h59 (horário de Brasília), início em 31/10/2026 às 20h, inscrições abertas. Depois do prazo ninguém novo se inscreve, mas quem já está dentro ainda pode editar o time.
+
+A faixa de datas do site mostra: inscrições até o prazo, resultados dos grupos em 26/10 (segunda) e o torneio na data de início. Prazo e início mudam sozinhos conforme o painel; o dia 26/10 está escrito direto em `public/index.html`.
 
 ## Arquivos
 
