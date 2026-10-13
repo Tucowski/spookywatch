@@ -234,6 +234,84 @@ img { max-width: 100%; }
   .tile .date small { font-size: .8rem; }
   .prize-n { font-size: 2.3rem; }
 }
+
+/* ---------- movimento ---------- */
+:root { --ease: cubic-bezier(.22, .8, .24, 1); }
+html { scroll-behavior: smooth; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes slideL { from { opacity: 0; transform: translateX(36px); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-14px); } }
+@keyframes drop { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.5); } 60% { opacity: 1; transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes wipe {
+  from { clip-path: inset(0 100% 0 -2%); opacity: .4; transform: skewX(-7deg) translateX(-30px); }
+  to { clip-path: inset(-10% -10% -10% -2%); opacity: 1; transform: skewX(-7deg); }
+}
+@keyframes tickd { from { opacity: .3; transform: translateY(-9px); } }
+@keyframes bump { 40% { transform: scale(1.14); color: var(--accent); } }
+@keyframes float { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); } 50% { transform: translate3d(14px, -24px, 0) rotate(28deg); } }
+@keyframes glow { from { text-shadow: 0 0 0 rgba(255,157,28,0); } to { text-shadow: 0 0 30px rgba(255,157,28,.5); } }
+@keyframes shine { 0% { transform: translateX(0) skewX(-20deg); opacity: 1; } 100% { transform: translateX(520%) skewX(-20deg); opacity: 1; } }
+
+/* entrada do topo, em sequência */
+.hero { position: relative; overflow-x: clip; }
+.hero > * { position: relative; z-index: 1; }
+.eyebrow { animation: rise .6s var(--ease) backwards; }
+h1 { animation: wipe .95s var(--ease) .12s both; }
+h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
+.lead { animation: rise .7s var(--ease) .38s backwards; }
+.count { animation: rise .7s var(--ease) .5s backwards; }
+.ctas { animation: rise .7s var(--ease) .62s backwards; }
+.board { animation: slideL .9s var(--ease) .3s backwards; }
+.band .tile { animation: rise .7s var(--ease) calc(.7s + var(--i, 0) * 90ms) backwards; }
+.band .tile:nth-child(2) { --i: 1; }
+.band .tile:nth-child(3) { --i: 2; }
+.band .tile:nth-child(4) { --i: 3; }
+
+/* losangos que flutuam no topo */
+.hero::before, .hero::after { content: ""; position: absolute; z-index: 0; pointer-events: none; background: var(--accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); animation: float 9s ease-in-out infinite; }
+.hero::before { width: 22px; height: 22px; right: 46%; top: 4%; opacity: .5; }
+.hero::after { width: 12px; height: 12px; right: 6%; bottom: 8%; opacity: .35; animation-duration: 12s; animation-delay: -4s; }
+
+/* contador e número de times */
+.count b.tick { animation: tickd .4s var(--ease); }
+#nTeams { display: inline-block; }
+#nTeams.bump { animation: bump .5s var(--ease); }
+
+/* o que entra na tela anima uma vez */
+.slot { transition: transform .25s var(--ease), filter .25s; }
+.slot.in { animation: pop .5s var(--ease) calc(var(--i, 0) * 35ms) backwards; }
+.slot.new { animation: pop .65s var(--ease) backwards; }
+.team.enter { animation: rise .65s var(--ease) calc(var(--i, 0) * 80ms) backwards; }
+.feed li.in { animation: slideIn .5s var(--ease) calc(var(--i, 0) * 60ms) backwards; }
+#formBox > * { animation: rise .5s var(--ease) backwards; }
+.errs { animation: drop .3s var(--ease); }
+
+/* interação */
+.team, .tile, .card { transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s; }
+.btn { position: relative; overflow: hidden; }
+.btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.38), transparent); transform: skewX(-20deg); opacity: 0; pointer-events: none; }
+.btn:hover:not(:disabled):not([aria-disabled="true"])::after { animation: shine .75s ease; }
+.fld input, .fld select { transition: border-color .2s, box-shadow .25s; }
+.fld input:focus, .fld select:focus { box-shadow: 0 8px 16px -12px var(--accent); }
+.sw span { transition: transform .25s var(--ease); }
+.sw:hover span { transform: translateY(-3px); }
+.sw input:checked + span { transform: scale(1.12); }
+@media (hover: hover) {
+  .team:hover { transform: translateY(-5px); box-shadow: 0 20px 36px -20px rgba(0, 0, 0, .8); border-color: var(--c); }
+  .tile:hover { transform: translateY(-3px); }
+  .slot.full:hover { transform: translateY(-3px) scale(1.07); filter: brightness(1.1); }
+}
+
+/* revelar ao rolar, onde o navegador suporta; sem suporte, tudo já aparece */
+@supports (animation-timeline: view()) {
+  .reg-intro, .sec-head, .card, .foot { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
+}
+
+/* quem pede menos movimento não vê nada disso */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}
 </style>
 </head>
 <body>
@@ -361,7 +439,7 @@ img { max-width: 100%; }
   function ls(op, k, v) { try { if (op === "get") return localStorage.getItem(k); if (op === "set") localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { return null; } return null; }
   function loadJSON(k) { try { return JSON.parse(ls("get", k) || "null"); } catch (e) { return null; } }
 
-  var S = { teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: loadJSON("spookywatch.profile"), mine: loadJSON("spookywatch.mine"), admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
+  var S = { teamSeen: {}, feedSeen: null, slotSeen: null, teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: loadJSON("spookywatch.profile"), mine: loadJSON("spookywatch.mine"), admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
   var $ = function (id) { return document.getElementById(id); };
 
   function h(tag, attrs) {
@@ -415,6 +493,20 @@ img { max-width: 100%; }
   function startMs() { var t = Date.parse(S.cfg.startsAt || DEFAULT_START); return isNaN(t) ? Date.parse(DEFAULT_START) : t; }
   function myTeam() { return S.mine ? S.teams.filter(function (t) { return t.id === S.mine.id; })[0] || null : null; }
 
+  var REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  function setNum(el, to) {
+    var from = Number(el.textContent) || 0;
+    if (from === to || REDUCED) { el.textContent = to; return; }
+    cancelAnimationFrame(el._raf || 0);
+    var t0 = performance.now(), dur = 520;
+    (function step(now) {
+      var p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(from + (to - from) * e);
+      if (p < 1) el._raf = requestAnimationFrame(step);
+    })(t0);
+    el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
+  }
+
   function api(method, path, body, admin) {
     var headers = { "content-type": "application/json" };
     if (admin && S.adminToken) headers["x-admin-token"] = S.adminToken;
@@ -433,12 +525,23 @@ img { max-width: 100%; }
   }
 
   /* contagem */
+  var cdRef = null;
   function tickCount() {
     var box = $("count"), d = startMs() - Date.now();
-    box.textContent = "";
-    if (d <= 0) { box.appendChild(h("div", null, h("b", { text: "Rolando" }), h("small", { text: "torneio em andamento" }))); return; }
-    var s = Math.floor(d / 1000), parts = [[Math.floor(s / 86400), "dias"], [Math.floor(s % 86400 / 3600), "horas"], [Math.floor(s % 3600 / 60), "min"], [s % 60, "seg"]];
-    parts.forEach(function (p) { box.appendChild(h("div", null, h("b", { text: String(p[0]).padStart(2, "0") }), h("small", { text: p[1] }))); });
+    if (d <= 0) {
+      if (cdRef !== "done") { box.textContent = ""; box.appendChild(h("div", null, h("b", { text: "Rolando" }), h("small", { text: "torneio em andamento" }))); cdRef = "done"; }
+      return;
+    }
+    var sec = Math.floor(d / 1000), vals = [Math.floor(sec / 86400), Math.floor(sec % 86400 / 3600), Math.floor(sec % 3600 / 60), sec % 60];
+    var txt = vals.map(function (v) { return String(v).padStart(2, "0"); });
+    if (!cdRef || cdRef === "done") {
+      box.textContent = "";
+      cdRef = ["dias", "horas", "min", "seg"].map(function (n, i) { var b = h("b", { text: txt[i] }); box.appendChild(h("div", null, b, h("small", { text: n }))); return b; });
+      return;
+    }
+    cdRef.forEach(function (b, i) {
+      if (b.textContent !== txt[i]) { b.textContent = txt[i]; b.classList.remove("tick"); void b.offsetWidth; b.classList.add("tick"); }
+    });
   }
 
   /* ações da organização */
@@ -453,16 +556,20 @@ img { max-width: 100%; }
   /* vagas */
   function renderBoard() {
     var list = S.teams, max = maxTeams(), conf = list.filter(function (t) { return S.conf[t.id]; }).length;
-    $("nTeams").textContent = list.length; $("nMax").textContent = max;
+    setNum($("nTeams"), list.length); $("nMax").textContent = max;
     $("confirmedN").textContent = conf + " de " + list.length + " confirmados";
     var full = list.length >= max, left = max - list.length;
     $("boardState").textContent = !isOpen() ? "Inscrições encerradas" : full ? "Vagas esgotadas" : left + (left === 1 ? " vaga livre" : " vagas livres");
     var box = $("slots"); box.textContent = "";
+    var seenNow = {};
     for (var i = 0; i < max; i++) {
-      var t = list[i];
-      if (t) box.appendChild(h("div", { class: "slot full" + (S.conf[t.id] ? " ok" : ""), style: "background:" + safeColor(t.color), title: t.name, text: t.tag }));
-      else box.appendChild(h("div", { class: "slot empty", text: String(i + 1).padStart(2, "0") }));
+      var t = list[i], anim = "";
+      if (t) { seenNow[t.id] = 1; anim = !S.slotSeen ? " in" : (!S.slotSeen[t.id] ? " new" : ""); }
+      else if (!S.slotSeen) anim = " in";
+      if (t) box.appendChild(h("div", { class: "slot full" + (S.conf[t.id] ? " ok" : "") + anim, style: "background:" + safeColor(t.color) + ";--i:" + i, title: t.name, text: t.tag }));
+      else box.appendChild(h("div", { class: "slot empty" + anim, style: "--i:" + i, text: String(i + 1).padStart(2, "0") }));
     }
+    S.slotSeen = seenNow;
   }
 
   /* times */
@@ -475,7 +582,9 @@ img { max-width: 100%; }
       box.appendChild(h("div", { class: "empty-state" }, h("b", { text: "A arena está vazia" }), h("span", { text: "Todos os slots estão livres. O primeiro time inscrito aparece aqui na hora, para todo mundo." }), h("a", { class: "btn main sm", href: "#inscricao", text: "Ser o primeiro" })));
       return;
     }
+    var prevSeen = S.teamSeen; S.teamSeen = {};
     list.forEach(function (t, i) {
+      S.teamSeen[t.id] = 1;
       var confirmed = !!S.conf[t.id], mine = S.mine && t.id === S.mine.id;
       var roster = h("ul", { class: "roster" });
       t.players.forEach(function (p) {
@@ -489,7 +598,7 @@ img { max-width: 100%; }
         foot.appendChild(h("button", { class: "btn ghost sm", type: "button", style: "color:var(--bad)", onclick: function () { removeTeam(t.id); }, text: removing === t.id ? "Tocar de novo para remover" : "Remover" }));
       }
       var owner = t.owner || {};
-      box.appendChild(h("article", { class: "team" + (S.fresh[t.id] ? " fresh" : ""), style: "--c:" + safeColor(t.color) },
+      box.appendChild(h("article", { class: "team" + (prevSeen[t.id] ? "" : " enter") + (S.fresh[t.id] ? " fresh" : ""), style: "--c:" + safeColor(t.color) + ";--i:" + Math.min(i, 10) },
         h("div", { class: "team-top" }, h("div", { class: "seed num", text: "Vaga " + String(i + 1).padStart(2, "0") + (mine ? " · seu time" : "") }), h("div", { class: "team-tag", text: t.tag }), h("div", { class: "team-name", text: t.name })),
         h("div", { class: "chips" }, h("span", { class: "chip " + (confirmed ? "ok" : "wait"), text: confirmed ? "Confirmado" : "Aguardando" }), h("span", { class: "chip", text: t.rank })),
         h("div", { class: "capline" }, h("span", { class: "label", text: "Capitão" }), h("b", { text: owner.name || "" }), h("span", { class: "handle", text: owner.discord ? "@" + owner.discord : "" })),
@@ -504,8 +613,10 @@ img { max-width: 100%; }
     ev.sort(function (a, b) { return b.ts - a.ts; });
     box.textContent = "";
     if (!ev.length) { box.appendChild(h("li", { class: "feed-empty", style: "display:block", text: "Quando um time se inscrever, o aviso aparece aqui na hora." })); return; }
-    ev.slice(0, 8).forEach(function (e) {
-      box.appendChild(h("li", { style: "--c:" + safeColor(e.t.color) }, h("div", { class: "av", text: e.t.tag.slice(0, 3) }),
+    var prevFeed = S.feedSeen; S.feedSeen = {};
+    ev.slice(0, 8).forEach(function (e, n) {
+      var key = e.t.id + e.kind; S.feedSeen[key] = 1;
+      box.appendChild(h("li", { class: !prevFeed || !prevFeed[key] ? "in" : "", style: "--c:" + safeColor(e.t.color) + ";--i:" + n }, h("div", { class: "av", text: e.t.tag.slice(0, 3) }),
         h("div", null, h("div", { class: "t" }, h("b", { text: e.t.name }), e.kind === "in" ? " entrou na arena" : " teve a vaga confirmada"), h("div", { class: "w", "data-ts": e.ts, text: rel(e.ts) }))));
     });
   }
@@ -714,10 +825,10 @@ img { max-width: 100%; }
     var prev = {}; S.teams.forEach(function (t) { prev[t.id] = 1; });
     S.teams = d.teams || []; S.conf = d.confirmed || {}; S.cfg = d.cfg || S.cfg;
     if (S.ready) S.teams.forEach(function (t) {
-      if (!prev[t.id] && !(S.mine && S.mine.id === t.id)) {
-        S.fresh[t.id] = 1; toast("[" + t.tag + "] " + t.name + " acabou de se inscrever");
-        setTimeout(function () { delete S.fresh[t.id]; renderAll(); }, 7000);
-      }
+      if (prev[t.id]) return;
+      S.fresh[t.id] = 1;
+      if (!(S.mine && S.mine.id === t.id)) toast("[" + t.tag + "] " + t.name + " acabou de se inscrever");
+      setTimeout(function () { delete S.fresh[t.id]; renderAll(); }, 7000);
     });
     S.ready = true;
     if (S.mine && !myTeam()) { S.mine = null; ls("del", "spookywatch.mine"); }
