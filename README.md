@@ -45,3 +45,7 @@ A faixa de datas do site mostra: inscrições até o prazo, resultados dos grupo
 - `public/index.html`: o site inteiro.
 - `netlify/functions/api.mjs`: API em `/api/*`. Guarda tudo no Netlify Blobs e valida de novo no servidor.
 - Cada time recebe uma chave secreta guardada no navegador de quem se inscreveu. Só quem tem essa chave edita ou cancela o time. A organização edita qualquer um com o token.
+
+## Botão do Discord
+
+O convite do servidor (`https://discord.gg/Zu63wCXgyM`) está em dois botões em `public/index.html`: no topo e ao lado de "Inscrever meu time". O símbolo usado é um balão de conversa genérico. Para mostrar o logo oficial, baixe-o da página de marca do Discord, salve como `public/discord-logo.svg` e publique: ele substitui o balão sozinho. Para trocar o link, procure `discord.gg` no arquivo e troque nos dois lugares.
