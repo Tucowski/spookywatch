@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Spookywatch</title>
+<meta name="description" content="Inscrição de times para o Spookywatch, torneio 5v5 de Overwatch.">
+<meta name="theme-color" content="#0a1020">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8E%83%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Big+Shoulders+Display:wght@800;900&display=swap">
+<style>
+/* Layout: placa de arena em ângulo. Hero com placar de vagas ao lado, mural de times ao vivo em grade, últimas inscrições e regras na coluna lateral. Formas cortadas em paralelogramo, laranja de sinalização sobre azul-noite. */
+:root {
+  --ink: #0a1020;
+  --panel: #111a2e;
+  --panel-2: #172340;
+  --edge: #263556;
+  --text: #e9eefb;
+  --muted: #92a2c6;
+  --accent: #ff9d1c;
+  --accent-ink: #1a1100;
+  --good: #3ddc97;
+  --bad: #ff6173;
+  --f-display: "Big Shoulders Display", "Impact", "Arial Narrow", sans-serif;
+  --f-label: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --f-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cut: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font: 400 16px/1.5 var(--f-body);
+  padding-inline: 16px;
+  padding-block: 0 56px;
+  background-image:
+    repeating-linear-gradient(115deg, rgba(255,255,255,.022) 0 2px, transparent 2px 26px),
+    radial-gradient(900px 420px at 85% -80px, rgba(255,157,28,.16), transparent 70%);
+  background-repeat: no-repeat, no-repeat;
+}
+.wrap { max-width: 1180px; margin-inline: auto; }
+h1, h2, h3, p { margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.label { font: 600 .8rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* topo */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 18px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; font: 800 1.25rem/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; }
+.brand i { width: 22px; height: 22px; background: var(--accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); display: block; }
+.live { display: inline-flex; align-items: center; gap: 8px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(61,220,151,.6); animation: pulse 1.8s infinite; }
+.dot.off { background: var(--muted); animation: none; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(61,220,151,0); } 100% { box-shadow: 0 0 0 0 rgba(61,220,151,0); } }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; align-items: center; padding-block: 28px 44px; }
+.eyebrow { display: inline-block; background: var(--accent); color: var(--accent-ink); font: 700 .85rem/1 var(--f-label); letter-spacing: .16em; text-transform: uppercase; padding: 7px 18px 7px 14px; clip-path: var(--cut); }
+h1 { font: 900 clamp(3.4rem, 11.5vw, 8rem)/.84 var(--f-display); letter-spacing: .005em; text-transform: uppercase; margin-top: 18px; transform: skewX(-7deg); transform-origin: left bottom; text-wrap: balance; }
+h1 span { color: var(--accent); display: block; }
+.lead { max-width: 52ch; color: var(--muted); margin-top: 22px; font-size: 1.05rem; }
+.count { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+.count div { min-width: 74px; padding: 10px 12px 8px; background: var(--panel); border: 1px solid var(--edge); border-bottom: 3px solid var(--accent); text-align: center; }
+.count b { display: block; font: 800 2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.count small { font: 600 .7rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.ctas { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; cursor: pointer; text-decoration: none; padding: 13px 26px; font: 700 1rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; clip-path: var(--cut); transition: transform .15s, filter .15s; }
+.btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.btn.main { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: var(--panel-2); color: var(--text); }
+.btn.sm { padding: 9px 16px; font-size: .85rem; }
+
+/* placar de vagas */
+.board { background: var(--panel); border: 1px solid var(--edge); padding: 22px; position: relative; }
+.board::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--accent); }
+.board-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.board-n { font: 900 3.6rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.board-n small { font-size: 1.6rem; color: var(--muted); }
+.slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.slot { height: 52px; clip-path: var(--cut); background: var(--ink); display: grid; place-items: center; font: 800 1.15rem/1 var(--f-display); letter-spacing: .04em; color: var(--muted); position: relative; border: 0; }
+.slot.empty { background: repeating-linear-gradient(115deg, var(--panel-2) 0 6px, var(--ink) 6px 12px); }
+.slot.full { color: #0a1020; }
+.slot.ok::after { content: ""; position: absolute; right: 16px; bottom: 6px; width: 8px; height: 8px; background: var(--good); border: 2px solid #0a1020; border-radius: 50%; }
+.legend { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* corpo */
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; }
+.sec-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+h2 { font: 900 2.4rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+.teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 16px; }
+.team { background: var(--panel); border: 1px solid var(--edge); display: flex; flex-direction: column; min-width: 0; }
+.team.fresh { animation: arrive 1s ease-out; box-shadow: 0 0 0 2px var(--accent); }
+@keyframes arrive { from { transform: translateY(14px) scale(.97); opacity: 0; } }
+.team-top { position: relative; padding: 16px 16px 14px 20px; background: var(--c); color: #0a1020; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 22px) 100%, 0 100%); }
+.team-top .seed { font: 700 .8rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.team-tag { font: 900 3.2rem/.9 var(--f-display); letter-spacing: .02em; margin-top: 6px; overflow-wrap: anywhere; }
+.team-name { font: 600 1.05rem/1.2 var(--f-body); overflow-wrap: anywhere; }
+.chips { display: flex; gap: 6px; padding: 12px 16px 0; flex-wrap: wrap; }
+.chip { font: 700 .75rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; padding: 5px 9px; background: var(--ink); color: var(--muted); border: 1px solid var(--edge); }
+.chip.ok { color: var(--good); border-color: rgba(61,220,151,.5); }
+.chip.wait { color: var(--accent); border-color: rgba(255,157,28,.5); }
+.roster { list-style: none; margin: 10px 0 0; padding: 0 16px; display: grid; gap: 2px; }
+.roster li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--edge); }
+.roster li:last-child { border-bottom: 0; }
+.roster svg { width: 20px; height: 20px; }
+.roster .who { min-width: 0; }
+.roster .nick { font-weight: 600; overflow-wrap: anywhere; }
+.roster .bt { color: var(--muted); font-size: .8rem; overflow-wrap: anywhere; }
+.roster .cap { font: 700 .7rem/1 var(--f-label); letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
+.roster .sub .nick { color: var(--muted); }
+.team-foot { display: flex; gap: 8px; padding: 12px 16px 16px; margin-top: auto; flex-wrap: wrap; }
+.empty-state { grid-column: 1 / -1; border: 2px dashed var(--edge); padding: 44px 24px; text-align: center; color: var(--muted); display: grid; gap: 14px; justify-items: center; }
+.empty-state b { font: 800 1.7rem/1 var(--f-display); text-transform: uppercase; color: var(--text); letter-spacing: .03em; }
+
+/* lateral */
+.side { display: grid; gap: 20px; position: sticky; top: 16px; }
+.card { background: var(--panel); border: 1px solid var(--edge); }
+.card-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--edge); }
+.chan { font: 700 1.05rem/1 var(--f-label); letter-spacing: .06em; }
+.chan i { color: var(--muted); font-style: normal; margin-right: 4px; }
+.feed { list-style: none; margin: 0; padding: 6px 16px; display: grid; }
+.feed li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--edge); align-items: center; }
+.feed li:last-child { border-bottom: 0; }
+.av { width: 34px; height: 34px; display: grid; place-items: center; background: var(--c); color: #0a1020; font: 900 .85rem/1 var(--f-display); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.feed .t { font-size: .92rem; overflow-wrap: anywhere; }
+.feed .w { color: var(--muted); font-size: .78rem; }
+.feed-empty { padding: 20px 16px; color: var(--muted); font-size: .92rem; }
+.card-b { padding: 14px 16px 16px; display: grid; gap: 12px; }
+.ann { width: 100%; min-height: 120px; resize: vertical; background: var(--ink); border: 1px solid var(--edge); padding: 10px; font: 400 .82rem/1.45 ui-monospace, "SFMono-Regular", Menlo, monospace; color: var(--text); }
+.rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.rules li { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; font-size: .92rem; }
+.rules b { font: 700 .8rem/1.5 var(--f-label); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+
+/* formulário */
+.reg { margin-top: 56px; display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 32px; align-items: start; scroll-margin-top: 16px; }
+.reg-intro p { color: var(--muted); margin-top: 14px; max-width: 40ch; }
+.form { background: var(--panel); border: 1px solid var(--edge); padding: 22px; display: grid; gap: 22px; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.fld { display: grid; gap: 6px; min-width: 0; }
+.fld input[type="text"], .fld select, .cfg input[type="text"], .cfg input[type="number"], .cfg input[type="datetime-local"] { width: 100%; background: var(--ink); border: 1px solid var(--edge); border-bottom: 2px solid var(--edge); padding: 11px 12px; border-radius: 0; min-width: 0; }
+.fld input:focus, .fld select:focus { border-bottom-color: var(--accent); outline: none; }
+.fld input[aria-invalid="true"] { border-color: var(--bad); }
+.hint { color: var(--muted); font-size: .8rem; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.sw { position: relative; }
+.sw input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.sw span { display: block; width: 38px; height: 30px; background: var(--c); clip-path: var(--cut); border: 0; }
+.sw input:checked + span { outline: 3px solid var(--text); outline-offset: 2px; }
+.sw input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+.prow { display: grid; grid-template-columns: 96px minmax(0, 1.3fr) minmax(0, 1fr) 64px; gap: 10px; align-items: end; padding-block: 12px; border-top: 1px solid var(--edge); }
+.prow:first-of-type { border-top: 0; }
+.prow .role { display: flex; align-items: center; gap: 8px; font: 700 .9rem/1 var(--f-label); letter-spacing: .1em; text-transform: uppercase; padding-bottom: 12px; }
+.prow .role svg { width: 20px; height: 20px; }
+.capsel { display: flex; align-items: center; gap: 6px; padding-bottom: 10px; font: 600 .75rem/1 var(--f-label); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.capsel input { accent-color: var(--accent); width: 18px; height: 18px; }
+.errs { background: rgba(255,97,115,.1); border-left: 4px solid var(--bad); padding: 12px 14px; display: grid; gap: 4px; font-size: .92rem; }
+.errs p::before { content: "– "; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.note { color: var(--muted); font-size: .9rem; border: 1px dashed var(--edge); padding: 14px; }
+.cfg { display: grid; gap: 14px; }
+.cfg label.check { display: flex; align-items: center; gap: 8px; }
+.cfg input[type="checkbox"] { accent-color: var(--accent); width: 18px; height: 18px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 24px); background: var(--text); color: var(--ink); padding: 12px 20px; font-weight: 600; opacity: 0; pointer-events: none; transition: .25s; max-width: calc(100% - 32px); z-index: 10; clip-path: var(--cut); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 960px) {
+  .hero, .cols, .reg { grid-template-columns: minmax(0, 1fr); }
+  .side { position: static; }
+}
+@media (max-width: 560px) {
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .prow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .prow .role { grid-column: 1 / -1; padding-bottom: 0; }
+  .slots { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .count div { min-width: 64px; }
+  h2 { font-size: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dot, .team.fresh { animation: none; }
+  .btn, .toast { transition: none; }
+}
+
+html { color-scheme: dark; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.foot { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--edge); display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.linkbtn { background: none; border: 0; color: var(--muted); cursor: pointer; text-decoration: underline; padding: 6px 0; font-size: .85rem; }
+#loginForm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+#loginForm input { background: var(--ink); border: 1px solid var(--edge); padding: 9px 10px; border-radius: 0; min-width: 0; width: 220px; max-width: 100%; }
+
+.bar-r { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.who-chip { display: inline-flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--edge); padding: 6px 12px; font: 600 .95rem/1 var(--f-label); letter-spacing: .04em; max-width: 100%; }
+.who-chip span { overflow-wrap: anywhere; }
+.who-chip .linkbtn { padding: 0; }
+.capline, .capbox { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.capline { padding: 12px 16px 0; font-size: .92rem; }
+.capbox { background: var(--ink); border: 1px solid var(--edge); border-left: 4px solid var(--accent); padding: 12px 14px; }
+.handle { color: var(--muted); overflow-wrap: anywhere; }
+.prow { grid-template-columns: 110px minmax(0, 1fr); }
+#loginCard { max-width: 560px; }
+@media (max-width: 560px) { .prow { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand"><span aria-hidden="true">🎃</span>Spookywatch</div>
+    <div class="bar-r"><div class="live label" id="presence"><span class="dot" id="presenceDot"></span><span id="presenceTxt">Ao vivo</span></div><div class="who-chip" id="whoChip" hidden><span id="whoTxt"></span><button class="linkbtn" id="logoutBtn" type="button">Sair</button></div></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Torneio 5v5 · Overwatch 2</span>
+      <h1>Spooky<span>watch</span></h1>
+      <p class="lead">Dezesseis times, uma arena. Monte sua composição de 1 tank, 2 DPS e 2 suportes, garanta a vaga e acompanhe cada inscrição chegando aqui em tempo real.</p>
+      <div class="count num" id="count" aria-label="Contagem regressiva para o início"></div>
+      <div class="ctas">
+        <a class="btn main" href="#inscricao">Inscrever meu time</a>
+      </div>
+    </div>
+    <aside class="board" aria-label="Vagas">
+      <div class="board-head">
+        <div class="board-n num"><span id="nTeams">0</span><small>/<span id="nMax">16</span></small></div>
+        <div class="label" id="boardState">Inscrições abertas</div>
+      </div>
+      <div class="slots num" id="slots"></div>
+      <div class="legend label">
+        <span><i class="dot" style="animation:none"></i> Confirmado</span>
+        <span id="confirmedN"></span>
+      </div>
+    </aside>
+  </section>
+
+  <div class="cols">
+    <main>
+      <div class="sec-head">
+        <h2>Times na arena</h2>
+        <span class="label" id="teamsMeta"></span>
+      </div>
+      <div class="teams" id="teams" aria-live="polite"></div>
+    </main>
+
+    <aside class="side" id="side">
+      <section class="card">
+        <div class="card-h">
+          <span class="chan">Últimas inscrições</span>
+          <span class="live label"><span class="dot" id="feedDot"></span>Ao vivo</span>
+        </div>
+        <ul class="feed" id="feed"></ul>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><span class="chan">Regulamento</span></div>
+        <div class="card-b">
+          <ul class="rules">
+            <li><b>Formato</b><span>16 times, eliminatória simples. Melhor de 3, final melhor de 5.</span></li>
+            <li><b>Time</b><span>1 tank, 2 DPS, 2 suporte e 1 reserva opcional.</span></li>
+            <li><b>Contas</b><span>Cada BattleTag entra em um único time.</span></li>
+            <li><b>Check-in</b><span>30 minutos antes. A organização chama o capitão pelo @ do Discord informado.</span></li>
+          </ul>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="reg" id="inscricao">
+    <div class="reg-intro">
+      <span class="label">Inscrição</span>
+      <h2 style="margin-top:10px" id="formTitle">Seu time</h2>
+      <p id="formLead">Entre com seu nome e seu @ do Discord. Você vira o capitão, responde pela equipe e é chamado por esse @. Um time por pessoa, e a formação pode ser editada até o início do torneio.</p>
+    </div>
+    <div id="formBox"></div>
+  </section>
+
+  <section class="reg" id="adminBox" hidden>
+    <div class="reg-intro">
+      <span class="label">Organização</span>
+      <h2 style="margin-top:10px">Painel</h2>
+      <p>Só quem entra com o token da organização vê este bloco. Confirme ou remova times direto nos cartões.</p>
+    </div>
+    <form class="form cfg" id="cfgForm">
+      <div class="grid2">
+        <div class="fld"><label class="label" for="cfg-max">Vagas</label><input type="number" id="cfg-max" min="2" max="64" step="1" value="16"></div>
+        <div class="fld"><label class="label" for="cfg-start">Início do torneio</label><input type="datetime-local" id="cfg-start"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="cfg-open" checked> Inscrições abertas</label>
+      <div class="actions"><button class="btn main sm" type="submit" id="cfgSave">Salvar painel</button></div>
+    </form>
+  </section>
+  <footer class="foot">
+    <button class="linkbtn" id="adminLink" type="button">Acesso da organização</button>
+    <form id="loginForm" hidden>
+      <label class="label" for="login-token">Token</label>
+      <input type="password" id="login-token" autocomplete="off">
+      <button class="btn ghost sm" type="submit">Entrar</button>
+    </form>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+  var SLOTS = [["tank", "Tank"], ["dps", "DPS"], ["dps", "DPS"], ["sup", "Suporte"], ["sup", "Suporte"]];
+  var RANKS = ["Bronze", "Prata", "Ouro", "Platina", "Diamante", "Mestre", "Grão-Mestre", "Campeão"];
+  var COLORS = ["#ff9d1c", "#3fb6ff", "#ff6173", "#3ddc97", "#b78cff", "#ffd447", "#ff6fd8", "#7be0e0"];
+  var DEFAULT_START = "2026-10-31T20:00:00-03:00";
+  var BT = /^[^\s#@]{3,24}#\d{3,8}$/;
+  var DC = /^@?[A-Za-z0-9_.]{2,32}$/;
+  var POLL_MS = 4000;
+
+  function ls(op, k, v) { try { if (op === "get") return localStorage.getItem(k); if (op === "set") localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { return null; } return null; }
+  function loadJSON(k) { try { return JSON.parse(ls("get", k) || "null"); } catch (e) { return null; } }
+
+  var S = { teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: loadJSON("spookywatch.profile"), mine: loadJSON("spookywatch.mine"), admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
+  var $ = function (id) { return document.getElementById(id); };
+
+  function h(tag, attrs) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "class") e.className = attrs[k];
+      else if (k === "text") e.textContent = attrs[k];
+      else if (k === "style") e.setAttribute("style", attrs[k]);
+      else if (k.slice(0, 2) === "on") e.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== false && attrs[k] != null) e.setAttribute(k, attrs[k] === true ? "" : attrs[k]);
+    });
+    for (var i = 2; i < arguments.length; i++) { var c = arguments[i]; if (c != null) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); }
+    return e;
+  }
+  var ICONS = {
+    tank: '<path d="M12 2 4 5v6c0 5 3.4 8.6 8 11 4.6-2.4 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    dps: '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6" stroke="currentColor" stroke-width="2"/>',
+    sup: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
+  };
+  function icon(kind) {
+    var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
+    s.innerHTML = ICONS[kind];
+    return s;
+  }
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("on");
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.classList.remove("on"); }, 3600);
+  }
+  function rel(ts) {
+    var d = Math.max(0, (Date.now() - ts) / 1000);
+    if (d < 45) return "agora mesmo";
+    if (d < 3600) return "há " + Math.round(d / 60) + " min";
+    if (d < 86400) return "há " + Math.round(d / 3600) + " h";
+    return new Date(ts).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+  }
+  function safeColor(c) { return COLORS.indexOf(c) >= 0 ? c : COLORS[0]; }
+  function maxTeams() { return Math.max(2, Math.min(64, Number(S.cfg.maxTeams) || 16)); }
+  function isOpen() { return S.cfg.open !== false; }
+  function startMs() { var t = Date.parse(S.cfg.startsAt || DEFAULT_START); return isNaN(t) ? Date.parse(DEFAULT_START) : t; }
+  function myTeam() { return S.mine ? S.teams.filter(function (t) { return t.id === S.mine.id; })[0] || null : null; }
+
+  function api(method, path, body, admin) {
+    var headers = { "content-type": "application/json" };
+    if (admin && S.adminToken) headers["x-admin-token"] = S.adminToken;
+    return fetch(path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined, cache: "no-store" }).then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (data) {
+        if (!r.ok) { var err = new Error((data && data.error) || "Falha de conexão."); err.errors = data && data.errors; err.status = r.status; throw err; }
+        return data;
+      });
+    });
+  }
+
+  function setLive(on) {
+    $("presenceDot").className = "dot" + (on ? "" : " off");
+    $("feedDot").className = "dot" + (on ? "" : " off");
+    $("presenceTxt").textContent = on ? "Ao vivo" : "Reconectando…";
+  }
+
+  /* contagem */
+  function tickCount() {
+    var box = $("count"), d = startMs() - Date.now();
+    box.textContent = "";
+    if (d <= 0) { box.appendChild(h("div", null, h("b", { text: "Rolando" }), h("small", { text: "torneio em andamento" }))); return; }
+    var s = Math.floor(d / 1000), parts = [[Math.floor(s / 86400), "dias"], [Math.floor(s % 86400 / 3600), "horas"], [Math.floor(s % 3600 / 60), "min"], [s % 60, "seg"]];
+    parts.forEach(function (p) { box.appendChild(h("div", null, h("b", { text: String(p[0]).padStart(2, "0") }), h("small", { text: p[1] }))); });
+  }
+
+  /* ações da organização */
+  function confirmTeam(id, on) { api("POST", "/api/admin/confirm/" + id, { on: on }, true).then(function () { toast(on ? "Time confirmado." : "Confirmação removida."); poll(); }, function (e) { toast(e.message); }); }
+  var removing = null;
+  function removeTeam(id) {
+    if (removing !== id) { removing = id; renderTeams(); clearTimeout(removeTeam.t); removeTeam.t = setTimeout(function () { removing = null; renderTeams(); }, 4000); return; }
+    removing = null;
+    api("DELETE", "/api/teams/" + id, {}, true).then(function () { toast("Time removido."); poll(); }, function (e) { toast(e.message); });
+  }
+
+  /* vagas */
+  function renderBoard() {
+    var list = S.teams, max = maxTeams(), conf = list.filter(function (t) { return S.conf[t.id]; }).length;
+    $("nTeams").textContent = list.length; $("nMax").textContent = max;
+    $("confirmedN").textContent = conf + " de " + list.length + " confirmados";
+    var full = list.length >= max, left = max - list.length;
+    $("boardState").textContent = !isOpen() ? "Inscrições encerradas" : full ? "Vagas esgotadas" : left + (left === 1 ? " vaga livre" : " vagas livres");
+    var box = $("slots"); box.textContent = "";
+    for (var i = 0; i < max; i++) {
+      var t = list[i];
+      if (t) box.appendChild(h("div", { class: "slot full" + (S.conf[t.id] ? " ok" : ""), style: "background:" + safeColor(t.color), title: t.name, text: t.tag }));
+      else box.appendChild(h("div", { class: "slot empty", text: String(i + 1).padStart(2, "0") }));
+    }
+  }
+
+  /* times */
+  function renderTeams() {
+    var box = $("teams"), list = S.teams;
+    box.textContent = "";
+    $("teamsMeta").textContent = list.length ? list.length + (list.length === 1 ? " time inscrito" : " times inscritos") : "";
+    if (!S.ready) { box.appendChild(h("div", { class: "empty-state" }, h("b", { text: "Carregando a arena" }), h("span", { text: "Buscando os times inscritos…" }))); return; }
+    if (!list.length) {
+      box.appendChild(h("div", { class: "empty-state" }, h("b", { text: "A arena está vazia" }), h("span", { text: "Todos os slots estão livres. O primeiro time inscrito aparece aqui na hora, para todo mundo." }), h("a", { class: "btn main sm", href: "#inscricao", text: "Ser o primeiro" })));
+      return;
+    }
+    list.forEach(function (t, i) {
+      var confirmed = !!S.conf[t.id], mine = S.mine && t.id === S.mine.id;
+      var roster = h("ul", { class: "roster" });
+      t.players.forEach(function (p) {
+        roster.appendChild(h("li", null, icon(p.role), h("div", { class: "who" }, h("div", { class: "nick", text: p.battletag.split("#")[0] }), h("div", { class: "bt", text: p.battletag }))));
+      });
+      if (t.sub && t.sub.battletag) roster.appendChild(h("li", { class: "sub" }, icon("dps"), h("div", { class: "who" }, h("div", { class: "nick", text: t.sub.battletag.split("#")[0] }), h("div", { class: "bt", text: t.sub.battletag })), h("span", { class: "cap", style: "color:var(--muted)", text: "Reserva" })));
+      var foot = h("div", { class: "team-foot" });
+      if (mine) foot.appendChild(h("a", { class: "btn ghost sm", href: "#inscricao", text: "Editar meu time" }));
+      if (S.admin) {
+        foot.appendChild(h("button", { class: "btn main sm", type: "button", onclick: function () { confirmTeam(t.id, !confirmed); }, text: confirmed ? "Desfazer" : "Confirmar" }));
+        foot.appendChild(h("button", { class: "btn ghost sm", type: "button", style: "color:var(--bad)", onclick: function () { removeTeam(t.id); }, text: removing === t.id ? "Tocar de novo para remover" : "Remover" }));
+      }
+      var owner = t.owner || {};
+      box.appendChild(h("article", { class: "team" + (S.fresh[t.id] ? " fresh" : ""), style: "--c:" + safeColor(t.color) },
+        h("div", { class: "team-top" }, h("div", { class: "seed num", text: "Vaga " + String(i + 1).padStart(2, "0") + (mine ? " · seu time" : "") }), h("div", { class: "team-tag", text: t.tag }), h("div", { class: "team-name", text: t.name })),
+        h("div", { class: "chips" }, h("span", { class: "chip " + (confirmed ? "ok" : "wait"), text: confirmed ? "Confirmado" : "Aguardando" }), h("span", { class: "chip", text: t.rank })),
+        h("div", { class: "capline" }, h("span", { class: "label", text: "Capitão" }), h("b", { text: owner.name || "" }), h("span", { class: "handle", text: owner.discord ? "@" + owner.discord : "" })),
+        roster, foot.childNodes.length ? foot : h("div", { style: "height:14px" })));
+    });
+  }
+
+  /* últimas inscrições */
+  function renderFeed() {
+    var box = $("feed"), ev = [];
+    S.teams.forEach(function (t) { ev.push({ ts: t.createdAt || 0, kind: "in", t: t }); if (S.conf[t.id]) ev.push({ ts: S.conf[t.id], kind: "ok", t: t }); });
+    ev.sort(function (a, b) { return b.ts - a.ts; });
+    box.textContent = "";
+    if (!ev.length) { box.appendChild(h("li", { class: "feed-empty", style: "display:block", text: "Quando um time se inscrever, o aviso aparece aqui na hora." })); return; }
+    ev.slice(0, 8).forEach(function (e) {
+      box.appendChild(h("li", { style: "--c:" + safeColor(e.t.color) }, h("div", { class: "av", text: e.t.tag.slice(0, 3) }),
+        h("div", null, h("div", { class: "t" }, h("b", { text: e.t.name }), e.kind === "in" ? " entrou na arena" : " teve a vaga confirmada"), h("div", { class: "w", "data-ts": e.ts, text: rel(e.ts) }))));
+    });
+  }
+
+  /* perfil (nome + @ do Discord) */
+  function renderWho() {
+    var chip = $("whoChip");
+    chip.hidden = !S.profile;
+    if (S.profile) $("whoTxt").textContent = S.profile.name + " · @" + S.profile.discord;
+  }
+  function logout() {
+    S.profile = null; ls("del", "spookywatch.profile");
+    renderWho(); renderAll();
+  }
+  $("logoutBtn").addEventListener("click", logout);
+
+  /* formulário */
+  var F = {};
+  function desiredMode() {
+    if (!S.ready) return "loading";
+    if (!S.profile) return "login";
+    var mine = myTeam();
+    if (!mine && (!isOpen() || S.teams.length >= maxTeams())) return "closed";
+    return mine ? "edit" : "new";
+  }
+  function fld(id, label, attrs, hint) {
+    var input = h("input", Object.assign({ type: "text", id: id, autocomplete: "off" }, attrs || {}));
+    F[id] = input;
+    return h("div", { class: "fld" }, h("label", { class: "label", for: id, text: label }), input, hint ? h("span", { class: "hint", text: hint }) : null);
+  }
+  function buildForm() {
+    var box = $("formBox"); box.textContent = ""; F = {};
+    var mode = S.formMode = desiredMode();
+    var mine = myTeam();
+    $("formTitle").textContent = mode === "edit" ? "Seu time está dentro" : mode === "login" ? "Entre para inscrever" : "Seu time";
+    if (mode === "loading") { box.appendChild(h("div", { class: "note", text: "Carregando…" })); return; }
+    if (mode === "closed") { box.appendChild(h("div", { class: "note", text: !isOpen() ? "As inscrições estão encerradas." : "Todas as vagas foram preenchidas." })); return; }
+    if (mode === "login") { buildLogin(box); return; }
+
+    var form = h("form", { class: "form", id: "teamForm", novalidate: true });
+    F.errs = h("div", { class: "errs", role: "alert", hidden: true });
+    var rank = h("select", { id: "f-rank" }); RANKS.forEach(function (r) { rank.appendChild(h("option", { value: r, text: r })); }); rank.value = "Ouro"; F.rank = rank;
+    var sw = h("div", { class: "swatches", role: "radiogroup", "aria-label": "Cor do time" });
+    COLORS.forEach(function (c, i) { sw.appendChild(h("label", { class: "sw", style: "--c:" + c }, h("input", { type: "radio", name: "color", value: c, "aria-label": "Cor " + (i + 1), checked: i === 0 }), h("span"))); });
+    form.appendChild(h("div", { class: "hp", "aria-hidden": "true" }, h("label", { for: "f-website", text: "Não preencha" }), h("input", { type: "text", id: "f-website", name: "website", tabindex: "-1", autocomplete: "off" })));
+    form.appendChild(h("div", { class: "capbox" }, h("span", { class: "label", text: "Capitão" }), h("b", { text: S.profile.name }), h("span", { class: "handle", text: "@" + S.profile.discord }), h("button", { class: "linkbtn", type: "button", onclick: logout, text: "Trocar" })));
+    form.appendChild(h("div", { class: "grid2" }, fld("f-name", "Nome do time", { maxlength: "24", placeholder: "Ex.: Reforço Tardio" }), fld("f-tag", "Sigla", { maxlength: "4", placeholder: "RFT" }, "De 2 a 4 letras ou números.")));
+    form.appendChild(h("div", { class: "grid2" }, h("div", { class: "fld" }, h("label", { class: "label", for: "f-rank", text: "Rank médio" }), rank), h("div", { class: "fld" }, h("span", { class: "label", text: "Cor do time" }), sw)));
+
+    var players = h("div", null, h("div", { class: "label", style: "margin-bottom:6px", text: "Escalação" }));
+    SLOTS.forEach(function (s, i) {
+      players.appendChild(h("div", { class: "prow" },
+        h("div", { class: "role" }, icon(s[0]), h("span", { text: s[1] })),
+        fld("p" + i + "-bt", "BattleTag", { placeholder: "Nome#1234" })));
+    });
+    players.appendChild(h("div", { class: "prow" }, h("div", { class: "role", style: "color:var(--muted)" }, icon("dps"), h("span", { text: "Reserva" })), fld("sb-bt", "BattleTag (opcional)", { placeholder: "Nome#1234" })));
+    form.appendChild(players);
+    form.appendChild(F.errs);
+    F.submit = h("button", { class: "btn main", type: "submit", text: "Inscrever time" });
+    F.cancel = h("button", { class: "btn ghost", type: "button", hidden: true, text: "Cancelar inscrição" });
+    form.appendChild(h("div", { class: "actions" }, F.submit, F.cancel));
+    form.addEventListener("submit", onSubmit);
+    F.cancel.addEventListener("click", onCancel);
+    F["f-tag"].addEventListener("input", function () { F["f-tag"].value = F["f-tag"].value.toUpperCase().replace(/[^A-Z0-9]/g, ""); });
+    box.appendChild(form);
+    S.formFilled = false;
+    fillForm(mine);
+  }
+  function buildLogin(box) {
+    var form = h("form", { class: "form", id: "loginCard", novalidate: true });
+    var err = h("div", { class: "errs", role: "alert", hidden: true });
+    form.appendChild(h("p", { class: "hint", style: "font-size:.95rem", text: "Diga seu nome e o seu @ do Discord. Você vira o capitão do time e a organização te chama por esse @. Não pedimos senha." }));
+    form.appendChild(h("div", { class: "grid2" }, fld("l-name", "Seu nome", { maxlength: "24", placeholder: "Ex.: Tuco", autocomplete: "name" }), fld("l-dc", "Seu @ do Discord", { maxlength: "33", placeholder: "@usuario" })));
+    form.appendChild(err);
+    form.appendChild(h("div", { class: "actions" }, h("button", { class: "btn main", type: "submit", text: "Entrar" })));
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var name = F["l-name"].value.trim(), dc = F["l-dc"].value.trim();
+      var errs = [];
+      if (name.length < 2) errs.push("Informe o seu nome.");
+      if (!DC.test(dc)) errs.push("O @ do Discord deve ter de 2 a 32 letras, números, ponto ou sublinhado.");
+      F["l-name"].setAttribute("aria-invalid", name.length < 2 ? "true" : "false");
+      F["l-dc"].setAttribute("aria-invalid", DC.test(dc) ? "false" : "true");
+      err.textContent = ""; errs.forEach(function (m) { err.appendChild(h("p", { text: m })); }); err.hidden = !errs.length;
+      if (errs.length) return;
+      S.profile = { name: name.slice(0, 24), discord: dc.replace(/^@/, "") };
+      ls("set", "spookywatch.profile", JSON.stringify(S.profile));
+      renderWho(); renderAll(); toast("Você entrou como " + S.profile.name + ".");
+    });
+    box.appendChild(form);
+  }
+  function fillForm(mine) {
+    if (!mine || S.formFilled || !F["f-name"]) return;
+    S.formFilled = true;
+    F["f-name"].value = mine.name; F["f-tag"].value = mine.tag; F.rank.value = mine.rank;
+    var c = document.querySelector('input[name="color"][value="' + safeColor(mine.color) + '"]'); if (c) c.checked = true;
+    mine.players.forEach(function (p, i) { F["p" + i + "-bt"].value = p.battletag; });
+    F["sb-bt"].value = mine.sub ? mine.sub.battletag : "";
+    F.submit.textContent = "Salvar alterações"; F.cancel.hidden = false;
+  }
+  function showErrors(list) {
+    F.errs.textContent = "";
+    list.forEach(function (m) { F.errs.appendChild(h("p", { text: m })); });
+    F.errs.hidden = !list.length;
+  }
+  function newKey() {
+    var a = new Uint8Array(24); (window.crypto || window.msCrypto).getRandomValues(a);
+    return Array.prototype.map.call(a, function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+  }
+  function onSubmit(ev) {
+    ev.preventDefault();
+    if (S.saving) return;
+    var errs = [], bad = [];
+    var name = F["f-name"].value.trim(), tag = F["f-tag"].value.trim();
+    if (name.length < 3) { errs.push("Dê um nome ao time com pelo menos 3 caracteres."); bad.push("f-name"); }
+    if (tag.length < 2) { errs.push("A sigla precisa de 2 a 4 caracteres."); bad.push("f-tag"); }
+    var seen = {}, others = {}, mineId = S.mine && S.mine.id;
+    S.teams.forEach(function (t) {
+      if (t.id === mineId) return;
+      if (t.owner && t.owner.discord.toLowerCase() === S.profile.discord.toLowerCase()) errs.push("O @" + S.profile.discord + " já é capitão de outro time.");
+      t.players.concat(t.sub ? [t.sub] : []).forEach(function (p) { others[p.battletag.toLowerCase()] = 1; });
+    });
+    var players = SLOTS.map(function (s, i) {
+      var bt = F["p" + i + "-bt"].value.trim();
+      if (!BT.test(bt)) { errs.push(s[1] + " " + (i + 1) + ": use o formato Nome#1234."); bad.push("p" + i + "-bt"); }
+      else if (others[bt.toLowerCase()]) { errs.push(bt + " já está inscrito em outro time."); bad.push("p" + i + "-bt"); }
+      else if (seen[bt.toLowerCase()]) { errs.push(bt + " aparece duas vezes."); bad.push("p" + i + "-bt"); }
+      seen[bt.toLowerCase()] = 1;
+      return { role: s[0], battletag: bt };
+    });
+    var sb = F["sb-bt"].value.trim(), sub = null;
+    if (sb) { if (!BT.test(sb) || seen[sb.toLowerCase()] || others[sb.toLowerCase()]) { errs.push("Reserva: BattleTag inválida ou já inscrita."); bad.push("sb-bt"); } else sub = { role: "dps", battletag: sb }; }
+    Object.keys(F).forEach(function (k) { if (F[k] && F[k].tagName === "INPUT") F[k].removeAttribute("aria-invalid"); });
+    bad.forEach(function (id) { if (F[id]) F[id].setAttribute("aria-invalid", "true"); });
+    showErrors(errs);
+    if (errs.length) { var first = F[bad[0]]; if (first) first.focus(); return; }
+    var doc = { name: name, tag: tag, rank: F.rank.value, color: (document.querySelector('input[name="color"]:checked') || {}).value || COLORS[0], owner: { name: S.profile.name, discord: S.profile.discord }, players: players, sub: sub, website: (document.getElementById("f-website") || {}).value || "" };
+    var editing = !!myTeam();
+    S.saving = true; F.submit.disabled = true;
+    var req;
+    if (editing) { doc.editKey = S.mine.key; req = api("PUT", "/api/teams/" + S.mine.id, doc); }
+    else { var key = newKey(); doc.editKey = key; req = api("POST", "/api/teams", doc).then(function (r) { if (r && r.id) { S.mine = { id: r.id, key: key }; ls("set", "spookywatch.mine", JSON.stringify(S.mine)); } return r; }); }
+    req.then(function () { toast(editing ? "Alterações salvas." : "Time inscrito. Boa sorte!"); return poll(); }, function (e) { showErrors(e.errors && e.errors.length ? e.errors : [e.message]); })
+      .then(function () { S.saving = false; if (F.submit) F.submit.disabled = false; });
+  }
+  var cancelArmed = false;
+  function onCancel() {
+    if (!cancelArmed) { cancelArmed = true; F.cancel.textContent = "Tocar de novo para cancelar"; setTimeout(function () { cancelArmed = false; if (F.cancel) F.cancel.textContent = "Cancelar inscrição"; }, 4000); return; }
+    cancelArmed = false;
+    api("DELETE", "/api/teams/" + S.mine.id, { editKey: S.mine.key }).then(function () {
+      toast("Inscrição cancelada. A vaga foi liberada.");
+      S.mine = null; ls("del", "spookywatch.mine"); return poll();
+    }, function (e) { toast(e.message); });
+  }
+
+  /* painel da organização */
+  function renderAdmin() {
+    $("adminBox").hidden = !S.admin;
+    $("adminLink").textContent = S.admin ? "Sair do acesso da organização" : "Acesso da organização";
+    if (!S.admin || renderAdmin.done) return;
+    renderAdmin.done = true;
+    $("cfg-max").value = maxTeams();
+    $("cfg-open").checked = isOpen();
+    var d = new Date(startMs()); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    $("cfg-start").value = d.toISOString().slice(0, 16);
+  }
+  $("cfgForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var st = new Date($("cfg-start").value);
+    var cfg = { maxTeams: Math.max(2, Math.min(64, Number($("cfg-max").value) || 16)), open: $("cfg-open").checked, startsAt: isNaN(st) ? DEFAULT_START : st.toISOString() };
+    $("cfgSave").disabled = true;
+    api("PUT", "/api/admin/config", cfg, true).then(function () { toast("Painel salvo para todos."); return poll(); }, function (e2) { toast(e2.message); }).then(function () { $("cfgSave").disabled = false; });
+  });
+  $("adminLink").addEventListener("click", function () {
+    if (S.admin) { S.admin = false; S.adminToken = ""; ls("del", "spookywatch.admin"); renderAdmin.done = false; renderAll(); return; }
+    var box = $("loginForm"); box.hidden = !box.hidden; if (!box.hidden) $("login-token").focus();
+  });
+  $("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    S.adminToken = $("login-token").value.trim();
+    api("GET", "/api/admin/check", null, true).then(function (r) {
+      if (r && r.admin) { S.admin = true; ls("set", "spookywatch.admin", S.adminToken); $("loginForm").hidden = true; $("login-token").value = ""; toast("Acesso da organização liberado."); renderAll(); }
+      else { S.adminToken = ""; toast("Token incorreto."); }
+    }, function () { S.adminToken = ""; toast("Não foi possível verificar agora."); });
+  });
+
+  /* estado ao vivo */
+  var raf = 0;
+  function renderAll() {
+    if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      renderBoard(); renderTeams(); renderFeed(); renderAdmin(); renderWho(); tickCount();
+      if (S.formMode !== desiredMode()) buildForm();
+      else if (S.formMode === "edit" && !S.formFilled) fillForm(myTeam());
+    });
+  }
+  function applyState(d) {
+    setLive(true);
+    var sig = JSON.stringify(d);
+    if (sig === S.sig) return;
+    S.sig = sig;
+    var prev = {}; S.teams.forEach(function (t) { prev[t.id] = 1; });
+    S.teams = d.teams || []; S.conf = d.confirmed || {}; S.cfg = d.cfg || S.cfg;
+    if (S.ready) S.teams.forEach(function (t) {
+      if (!prev[t.id] && !(S.mine && S.mine.id === t.id)) {
+        S.fresh[t.id] = 1; toast("[" + t.tag + "] " + t.name + " acabou de se inscrever");
+        setTimeout(function () { delete S.fresh[t.id]; renderAll(); }, 7000);
+      }
+    });
+    S.ready = true;
+    if (S.mine && !myTeam()) { S.mine = null; ls("del", "spookywatch.mine"); }
+    renderAll();
+  }
+  function poll() {
+    return api("GET", "/api/state").then(applyState, function () { setLive(false); });
+  }
+
+  tickCount();
+  setInterval(function () { tickCount(); document.querySelectorAll("[data-ts]").forEach(function (n) { n.textContent = rel(Number(n.getAttribute("data-ts"))); }); }, 1000);
+  setInterval(function () { if (!document.hidden) poll(); }, POLL_MS);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });
+  if (S.adminToken) api("GET", "/api/admin/check", null, true).then(function (r) { if (r && r.admin) { S.admin = true; renderAll(); } else { S.adminToken = ""; ls("del", "spookywatch.admin"); } }, function () { });
+  renderBoard(); renderTeams(); renderFeed(); renderWho(); buildForm();
+  poll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "spookywatch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Site de inscrição do torneio Spookywatch (Overwatch) com Discord em tempo real",
+  "dependencies": {
+    "@netlify/blobs": "^8.2.0"
+  }
+}
