@@ -17,7 +17,16 @@ const DEFAULTS = {
   open: true,
   startsAt: "2026-10-31T20:00:00-03:00",
   closesAt: "2026-10-24T23:59:00-03:00", // prazo das inscrições: até o fim do dia 24
+  streamUrl: "", // link da transmissão (Twitch, YouTube ou Kick)
 };
+
+const STREAM_HOSTS = /^((www|m)\.)?(twitch\.tv|youtube\.com|kick\.com)$|^youtu\.be$/;
+function cleanStream(v) { // "" = sem link; null = inválido
+  const s = String(v ?? "").trim().slice(0, 200);
+  if (!s) return "";
+  try { const u = new URL(s); if (u.protocol === "https:" && STREAM_HOSTS.test(u.hostname)) return u.href; } catch { /* inválido */ }
+  return null;
+}
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -310,7 +319,10 @@ export async function handle(req, st) {
       const max = Math.max(2, Math.min(64, Number(body.maxTeams) || DEFAULTS.maxTeams));
       const starts = new Date(body.startsAt);
       const closes = new Date(body.closesAt);
+      const stream = cleanStream(body.streamUrl);
+      if (stream === null) return json({ error: "Link inválido. Use um link https da Twitch, do YouTube ou da Kick." }, 422);
       await st.setJSON("config", {
+        streamUrl: stream,
         maxTeams: Math.floor(max),
         open: body.open !== false,
         startsAt: isNaN(starts) ? DEFAULTS.startsAt : starts.toISOString(),

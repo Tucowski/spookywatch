@@ -57,3 +57,9 @@ A faixa de datas do site mostra: inscrições até o prazo, resultados dos grupo
 ## Botão do Discord
 
 O convite do servidor (`https://discord.gg/Zu63wCXgyM`) está em dois botões em `public/index.html`: no topo e ao lado de "Inscrever meu time". O símbolo usado é um balão de conversa genérico. Para mostrar o logo oficial, baixe-o da página de marca do Discord, salve como `public/discord-logo.svg` e publique: ele substitui o balão sozinho. Para trocar o link, procure `discord.gg` no arquivo e troque nos dois lugares.
+
+## Transmissão, FAQ e tema
+
+- No painel da organização, o campo **Link da transmissão** aceita links https da Twitch, do YouTube ou da Kick (qualquer outro é recusado). Com um combate ao vivo, a faixa vermelha ganha o botão **Assistir**. Deixe o campo vazio para esconder o botão.
+- A seção **Perguntas frequentes** é HTML simples em `public/index.html` (`<section class="faq">`); edite os textos ali.
+- O tema de Halloween (neblina, morcegos e fantasmas, brilho no título) usa só animações de `transform` e é desligado para quem pede menos movimento no sistema. Em telas pequenas aparecem menos elementos.
