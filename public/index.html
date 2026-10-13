@@ -325,9 +325,8 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
 .livebar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: rgba(255,97,115,.12); border: 1px solid var(--bad); border-left-width: 5px; padding: 10px 14px; margin-bottom: 8px; }
 .livebar .dot { background: var(--bad); box-shadow: 0 0 0 0 rgba(255,97,115,.6); }
 .livebar .lv { font-weight: 600; }
-.livebar .btn { margin-left: auto; }
-.livebar .btn + .linkbtn { margin-left: 0; }
 .livebar .linkbtn { margin-left: auto; }
+.livebar .lv + .btn { margin-right: 10px; }
 .bracket-sec { margin-bottom: 44px; scroll-margin-top: 16px; }
 .badm { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .rounds { display: flex; gap: 32px; overflow-x: auto; padding: 4px 18px 14px 4px; }
@@ -349,6 +348,7 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
 .bt.tbd { color: var(--muted); }
 .bl { display: flex; align-items: center; gap: 8px; background: var(--bad); color: #fff; font: 700 .75rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; padding: 6px 12px; }
 .bl .dot { background: #fff; animation: none; }
+.bl .bw { margin-left: auto; color: #fff; text-decoration: underline; }
 .bctl { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; border-top: 1px solid var(--edge); }
 .champ { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--accent-ink); font: 800 1.2rem/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; padding: 12px 20px; margin-bottom: 14px; clip-path: var(--cut); }
 .music { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: inline-flex; align-items: center; gap: 8px; background: var(--panel); color: var(--text); border: 1px solid var(--edge); padding: 10px 14px; font: 700 .85rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
@@ -495,7 +495,7 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
       <details><summary>Posso editar ou cancelar a inscrição depois?</summary><p>Sim. Entre com a sua conta de capitão e use "Editar meu time" ou "Cancelar inscrição" até o início do torneio. Cancelar libera a vaga.</p></details>
       <details><summary>Posso jogar em mais de um time?</summary><p>Não. Cada BattleTag entra em um único time e cada capitão inscreve um único time.</p></details>
       <details><summary>O que significa o time estar confirmado?</summary><p>A organização confere cada inscrição e confirma o time. Só os times confirmados entram no sorteio do chaveamento.</p></details>
-      <details><summary>Onde acompanho os jogos?</summary><p>Na seção Chaveamento. Quando um combate está acontecendo, aparece uma faixa vermelha no topo do site com o botão Assistir, que leva para a transmissão.</p></details>
+      <details><summary>Onde acompanho os jogos?</summary><p>Na seção Chaveamento. Quando um combate está acontecendo, aparece uma faixa vermelha no topo do site. Cada partida ao vivo tem o seu próprio botão Assistir, que leva para a transmissão daquele confronto.</p></details>
       <details><summary>O que é proibido?</summary><p>O uso de XIM é proibido. E é estritamente obrigatório seguir todas as criadoras.</p></details>
     </div>
   </section>
@@ -512,7 +512,7 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
         <div class="fld"><label class="label" for="cfg-start">Início do torneio</label><input type="datetime-local" id="cfg-start"></div>
       </div>
       <div class="fld"><label class="label" for="cfg-close">Inscrições até</label><input type="datetime-local" id="cfg-close"></div>
-      <div class="fld"><label class="label" for="cfg-stream">Link da transmissão (Twitch, YouTube ou Kick)</label><input type="text" id="cfg-stream" maxlength="200" placeholder="https://twitch.tv/seucanal" autocomplete="off"></div>
+      <div class="fld"><label class="label" for="cfg-stream">Link da transmissão geral (usado quando o confronto não tem link próprio)</label><input type="text" id="cfg-stream" maxlength="200" placeholder="https://twitch.tv/seucanal" autocomplete="off"></div>
       <label class="check"><input type="checkbox" id="cfg-open" checked> Inscrições abertas</label>
       <div class="actions"><button class="btn main sm" type="submit" id="cfgSave">Salvar painel</button></div>
     </form>
@@ -953,11 +953,15 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
   }
   function bMatch(m, br, r) {
     var path = "/api/admin/bracket/match/" + m.id;
-    var card = h("div", { class: "match" + (m.live ? " live" : "") + (r > 0 ? " inn" : "") }, m.live ? h("div", { class: "bl" }, h("i", { class: "dot" }), "Ao vivo") : null, bTeam(m, "a", br, r), bTeam(m, "b", br, r));
+    var card = h("div", { class: "match" + (m.live ? " live" : "") + (r > 0 ? " inn" : "") }, m.live ? h("div", { class: "bl" }, h("i", { class: "dot" }), "Ao vivo", (m.streamUrl && /^https:\/\//.test(m.streamUrl)) ? h("a", { class: "bw", href: m.streamUrl, target: "_blank", rel: "noopener noreferrer", text: "Assistir ▸" }) : null) : null, bTeam(m, "a", br, r), bTeam(m, "b", br, r));
     if (S.admin && m.a && m.b) {
       var ctl = h("div", { class: "bctl" });
       if (m.winner) ctl.appendChild(h("button", { class: "btn ghost sm", type: "button", text: "Desfazer resultado", onclick: function () { bAct("POST", path, { winner: null }, "Resultado desfeito.", m.id + "u"); } }));
       else {
+        ctl.appendChild(h("button", { class: "btn ghost sm", type: "button", text: m.streamUrl ? "Editar link da live" : "Link da live", onclick: function () {
+          var u = window.prompt("Cole o link da transmissão deste confronto (Twitch, YouTube ou Kick). Deixe vazio para remover.", m.streamUrl || "");
+          if (u !== null) bAct("POST", path, { stream: u.trim() }, u.trim() ? "Link da live salvo." : "Link removido.");
+        } }));
         ctl.appendChild(h("button", { class: "btn " + (m.live ? "ghost" : "main") + " sm", type: "button", text: m.live ? "Encerrar ao vivo" : "Colocar ao vivo", onclick: function () { bAct("POST", path, { live: !m.live }, m.live ? "Combate encerrado." : "Combate ao vivo!"); } }));
         ["a", "b"].forEach(function (side) { ctl.appendChild(h("button", { class: "btn ghost sm", type: "button", text: "Venceu: " + br.teams[m[side]].tag, onclick: function () { bAct("POST", path, { winner: m[side] }, "Resultado salvo.", m.id + side); } })); });
       }
@@ -992,9 +996,11 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
     bar.hidden = !ms.length; bar.textContent = "";
     if (!ms.length) return;
     bar.appendChild(h("i", { class: "dot" })); bar.appendChild(h("b", { class: "label", text: "Combate ao vivo" }));
-    ms.forEach(function (m) { bar.appendChild(h("span", { class: "lv", text: S.bracket.teams[m.a].name + " × " + S.bracket.teams[m.b].name })); });
-    var su = S.cfg && S.cfg.streamUrl;
-    if (su && /^https:\/\//.test(su)) bar.appendChild(h("a", { class: "btn main sm", href: su, target: "_blank", rel: "noopener noreferrer", text: "Assistir" }));
+    ms.forEach(function (m) {
+      bar.appendChild(h("span", { class: "lv", text: S.bracket.teams[m.a].name + " × " + S.bracket.teams[m.b].name }));
+      var su = m.streamUrl || (S.cfg && S.cfg.streamUrl);
+      if (su && /^https:\/\//.test(su)) bar.appendChild(h("a", { class: "btn main sm", href: su, target: "_blank", rel: "noopener noreferrer", text: "Assistir" }));
+    });
     bar.appendChild(h("a", { class: "linkbtn", href: "#chaveamento", text: "Ver chaveamento" }));
   }
 

@@ -60,6 +60,7 @@ O convite do servidor (`https://discord.gg/Zu63wCXgyM`) está em dois botões em
 
 ## Transmissão, FAQ e tema
 
-- No painel da organização, o campo **Link da transmissão** aceita links https da Twitch, do YouTube ou da Kick (qualquer outro é recusado). Com um combate ao vivo, a faixa vermelha ganha o botão **Assistir**. Deixe o campo vazio para esconder o botão.
+- Cada confronto tem a sua própria transmissão: com o acesso da organização, o botão **Link da live** no confronto salva o link (https da Twitch, do YouTube ou da Kick; qualquer outro é recusado). Vários confrontos podem estar ao vivo ao mesmo tempo, cada um com o seu botão **Assistir** na faixa vermelha e no cartão do confronto.
+- O campo **Link da transmissão geral** do painel é só reserva: vale para confrontos ao vivo que não têm link próprio. Deixe vazio se não usar.
 - A seção **Perguntas frequentes** é HTML simples em `public/index.html` (`<section class="faq">`); edite os textos ali.
 - O tema de Halloween (neblina, morcegos e fantasmas, brilho no título) usa só animações de `transform` e é desligado para quem pede menos movimento no sistema. Em telas pequenas aparecem menos elementos.

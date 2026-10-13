@@ -291,6 +291,11 @@ export async function handle(req, st) {
       const match = br && br.rounds[r] && br.rounds[r][i];
       if (!match) return json({ error: "Confronto não encontrado." }, 404);
       if (!match.a || !match.b) return json({ error: "Aguardando os dois times deste confronto." }, 409);
+      if ("stream" in body) { // link da live deste confronto ("" remove)
+        const u = cleanStream(body.stream);
+        if (u === null) return json({ error: "Link inválido. Use um link https da Twitch, do YouTube ou da Kick." }, 422);
+        if (u) match.streamUrl = u; else delete match.streamUrl;
+      }
       if ("winner" in body) {
         const w = body.winner === null ? null : String(body.winner);
         if (w !== null && w !== match.a && w !== match.b) return json({ error: "Vencedor inválido." }, 422);
