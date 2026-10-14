@@ -64,3 +64,9 @@ O convite do servidor (`https://discord.gg/Zu63wCXgyM`) está em dois botões em
 - O campo **Link da transmissão geral** do painel é só reserva: vale para confrontos ao vivo que não têm link próprio. Deixe vazio se não usar.
 - A seção **Perguntas frequentes** é HTML simples em `public/index.html` (`<section class="faq">`); edite os textos ali.
 - O tema de Halloween (neblina, morcegos e fantasmas, brilho no título) usa só animações de `transform` e é desligado para quem pede menos movimento no sistema. Em telas pequenas aparecem menos elementos.
+
+## Prévia ao compartilhar
+
+- Ao colar o link do site no Discord, no WhatsApp ou no X, aparece um cartão com a imagem `public/og.png` (1200×630) e o título de Halloween. Os textos estão nas tags `og:` e `twitter:` no começo de `public/index.html`.
+- `netlify/edge-functions/og.js` troca os caminhos relativos pelo endereço completo do site, então não é preciso configurar domínio.
+- Discord e WhatsApp guardam a prévia em cache. Se mudar a imagem ou o texto e o cartão antigo continuar aparecendo, gere uma prévia nova (no Facebook, a ferramenta "Depurador de Compartilhamento") ou espere o cache expirar.

@@ -3,8 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Spookywatch</title>
-<meta name="description" content="Inscrição de times para o Spookywatch, torneio 5v5 de Overwatch.">
+<title>Spookywatch · Torneio de Halloween 5v5 de Overwatch 2</title>
+<meta name="description" content="Monte seu time de 5, garanta a vaga e acompanhe o chaveamento e as lives do Spookywatch, o torneio de Halloween de Overwatch 2.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Spookywatch">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Spookywatch 🎃 Torneio de Halloween 5v5 de Overwatch 2">
+<meta property="og:description" content="Monte seu time de 5, garanta a vaga e acompanhe o chaveamento e as lives ao vivo.">
+<meta property="og:url" content="/">
+<meta property="og:image" content="/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Spookywatch: abóbora de Halloween e o texto Torneio 5v5 Overwatch 2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Spookywatch 🎃 Torneio de Halloween 5v5 de Overwatch 2">
+<meta name="twitter:description" content="Monte seu time de 5, garanta a vaga e acompanhe o chaveamento e as lives ao vivo.">
+<meta name="twitter:image" content="/og.png">
 <meta name="theme-color" content="#0a1020">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8E%83%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,13 +109,13 @@ h1 span { color: var(--accent); display: block; }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; }
 .sec-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
 h2 { font: 900 2.4rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
-.teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 16px; }
+.teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 12px; align-items: start; }
 .team { background: var(--panel); border: 1px solid var(--edge); display: flex; flex-direction: column; min-width: 0; }
 .team.fresh { animation: arrive 1s ease-out; box-shadow: 0 0 0 2px var(--accent); }
 @keyframes arrive { from { transform: translateY(14px) scale(.97); opacity: 0; } }
 .team-top { position: relative; padding: 16px 16px 14px 20px; background: var(--c); color: #0a1020; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 22px) 100%, 0 100%); }
 .team-top .seed { font: 700 .8rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
-.team-tag { font: 900 3.2rem/.9 var(--f-display); letter-spacing: .02em; margin-top: 6px; overflow-wrap: anywhere; }
+.team-tag { font: 900 2.3rem/.9 var(--f-display); letter-spacing: .02em; margin-top: 6px; overflow-wrap: anywhere; }
 .team-name { font: 600 1.05rem/1.2 var(--f-body); overflow-wrap: anywhere; }
 .chips { display: flex; gap: 6px; padding: 12px 16px 0; flex-wrap: wrap; }
 .chip { font: 700 .75rem/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; padding: 5px 9px; background: var(--ink); color: var(--muted); border: 1px solid var(--edge); }
@@ -330,22 +345,22 @@ h1 span { animation: glow 3.4s ease-in-out 1.2s infinite alternate; }
 .bracket-sec { margin-bottom: 44px; scroll-margin-top: 16px; }
 .badm { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .rounds { display: flex; gap: 32px; overflow-x: auto; padding: 4px 18px 14px 4px; }
-.rcol { display: flex; flex-direction: column; gap: 10px; min-width: 236px; flex: none; }
+.rcol { display: flex; flex-direction: column; gap: 10px; width: 264px; flex: none; }
 .rbody { display: flex; flex-direction: column; flex: 1; }
 .pair, .single { flex: 1; display: flex; flex-direction: column; justify-content: space-around; position: relative; gap: 14px; padding-block: 7px; }
 .single { justify-content: center; }
 .pair::after { content: ""; position: absolute; right: -16px; top: 25%; bottom: 25%; width: 16px; border: 2px solid var(--edge); border-left: 0; pointer-events: none; }
 .match { background: var(--panel); border: 1px solid var(--edge); position: relative; }
 .match.inn::before { content: ""; position: absolute; left: -17px; top: 50%; width: 16px; border-top: 2px solid var(--edge); }
-.match.live { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
-.bt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-left: 5px solid var(--c, var(--edge)); min-height: 44px; }
-.bt + .bt { border-top: 1px solid var(--edge); }
+.match.on-air { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
+.btm { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-left: 5px solid var(--c, var(--edge)); min-height: 44px; }
+.btm + .btm { border-top: 1px solid var(--edge); }
 .btag { font: 800 1.1rem/1 var(--f-display); min-width: 3ch; }
 .bname { font-size: .88rem; color: var(--muted); overflow-wrap: anywhere; }
-.bt.win { background: var(--panel-2); }
-.bt.win .bname { color: var(--text); font-weight: 600; }
-.bt.lose { opacity: .45; }
-.bt.tbd { color: var(--muted); }
+.btm.win { background: var(--panel-2); }
+.btm.win .bname { color: var(--text); font-weight: 600; }
+.btm.lose { opacity: .45; }
+.btm.tbd { color: var(--muted); }
 .bl { display: flex; align-items: center; gap: 8px; background: var(--bad); color: #fff; font: 700 .75rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; padding: 6px 12px; }
 .bl .dot { background: #fff; animation: none; }
 .bl .bw { margin-left: auto; color: #fff; text-decoration: underline; }
@@ -383,6 +398,24 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
 .faq details[open] summary::after { content: "–"; }
 .faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .faq p { margin: 0; padding: 0 16px 16px; color: var(--muted); }
+/* times recolhidos: só o essencial; o resto abre ao clicar */
+button.team-top { display: block; width: 100%; border: 0; margin: 0; text-align: left; font: inherit; cursor: pointer; padding: 12px 40px 14px 16px; }
+button.team-top:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.team-top .chev { position: absolute; right: 14px; top: 50%; width: 9px; height: 9px; margin-top: -7px; border: solid currentColor; border-width: 0 3px 3px 0; transform: rotate(45deg); transition: transform .2s var(--ease); }
+.team-top[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: -2px; }
+.team .chips { padding-bottom: 12px; }
+.team-more[hidden] { display: none; }
+.team-more .capline { padding-top: 0; }
+.sec-head #teamsToggle { margin-left: auto; }
+@media (max-width: 640px) {
+  .teams { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .team.open { grid-column: 1 / -1; }
+  .team-tag { font-size: 1.8rem; }
+  .team-name { font-size: .92rem; }
+  button.team-top { padding: 10px 30px 12px 12px; }
+  .team-top .chev { right: 10px; }
+  .team .chips { padding: 10px 12px 12px; }
+}
 </style>
 </head>
 <body>
@@ -449,6 +482,7 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
       <div class="sec-head">
         <h2>Times na arena</h2>
         <span class="label" id="teamsMeta"></span>
+        <button class="btn ghost sm" id="teamsToggle" type="button" hidden>Expandir todos</button>
       </div>
       <div class="teams" id="teams" aria-live="polite"></div>
     </main>
@@ -545,7 +579,7 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
   function ls(op, k, v) { try { if (op === "get") return localStorage.getItem(k); if (op === "set") localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { return null; } return null; }
   function loadJSON(k) { try { return JSON.parse(ls("get", k) || "null"); } catch (e) { return null; } }
 
-  var S = { teamSeen: {}, feedSeen: null, slotSeen: null, teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: (function () { var c = loadJSON("spookywatch.cap"); return c && c.token ? { name: c.name, discord: c.discord } : null; })(), capToken: (loadJSON("spookywatch.cap") || {}).token || "", bracket: null, authTab: "login", admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
+  var S = { open: {}, teamSeen: {}, feedSeen: null, slotSeen: null, teams: [], conf: {}, cfg: { startsAt: DEFAULT_START, maxTeams: 16, open: true }, profile: (function () { var c = loadJSON("spookywatch.cap"); return c && c.token ? { name: c.name, discord: c.discord } : null; })(), capToken: (loadJSON("spookywatch.cap") || {}).token || "", bracket: null, authTab: "login", admin: false, adminToken: ls("get", "spookywatch.admin") || "", fresh: {}, ready: false, sig: "", formMode: null, formFilled: false, saving: false };
   ls("del", "spookywatch.profile"); ls("del", "spookywatch.mine"); // formato antigo, sem senha
   var $ = function (id) { return document.getElementById(id); };
 
@@ -694,10 +728,20 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
   }
 
   /* times */
+  function syncToggleAll() {
+    var btn = $("teamsToggle"), all = S.teams.length > 0 && S.teams.every(function (t) { return S.open[t.id]; });
+    btn.hidden = !S.teams.length; btn.textContent = all ? "Recolher todos" : "Expandir todos"; btn.dataset.all = all ? "1" : "";
+  }
+  function toggleAllTeams() {
+    var open = !$("teamsToggle").dataset.all;
+    S.teams.forEach(function (t) { S.open[t.id] = open; });
+    renderTeams();
+  }
   function renderTeams() {
     var box = $("teams"), list = S.teams;
     box.textContent = "";
     $("teamsMeta").textContent = list.length ? list.length + (list.length === 1 ? " time inscrito" : " times inscritos") : "";
+    syncToggleAll();
     if (!S.ready) { box.appendChild(h("div", { class: "empty-state" }, h("b", { text: "Carregando a arena" }), h("span", { text: "Buscando os times inscritos…" }))); return; }
     if (!list.length) {
       box.appendChild(h("div", { class: "empty-state" }, h("b", { text: "A arena está vazia" }), h("span", { text: "Todos os slots estão livres. O primeiro time inscrito aparece aqui na hora, para todo mundo." }), h("a", { class: "btn main sm", href: "#inscricao", text: "Ser o primeiro" })));
@@ -719,14 +763,24 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
         foot.appendChild(h("button", { class: "btn ghost sm", type: "button", style: "color:var(--bad)", onclick: function () { removeTeam(t.id); }, text: removing === t.id ? "Tocar de novo para remover" : "Remover" }));
         if (t.owner) foot.appendChild(h("button", { class: "btn ghost sm", type: "button", onclick: function () { resetCaptain(t.owner.discord); }, text: resetting === t.owner.discord ? "Tocar de novo para resetar" : "Resetar senha" }));
       }
-      var owner = t.owner || {};
-      box.appendChild(h("article", { class: "team" + (prevSeen[t.id] ? "" : " enter") + (S.fresh[t.id] ? " fresh" : ""), style: "--c:" + safeColor(t.color) + ";--i:" + Math.min(i, 10) },
-        h("div", { class: "team-top" }, h("div", { class: "seed num", text: "Vaga " + String(i + 1).padStart(2, "0") + (mine ? " · seu time" : "") }), h("div", { class: "team-tag", text: t.tag }), h("div", { class: "team-name", text: t.name })),
-        h("div", { class: "chips" }, h("span", { class: "chip " + (confirmed ? "ok" : "wait"), text: confirmed ? "Confirmado" : "Aguardando" }), h("span", { class: "chip", text: t.rank })),
+      var owner = t.owner || {}, open = !!S.open[t.id];
+      var more = h("div", { class: "team-more", id: "tm-" + t.id },
         h("div", { class: "capline" }, h("span", { class: "label", text: "Capitão" }), h("b", { text: owner.name || "" }), h("span", { class: "handle", text: owner.discord ? "@" + owner.discord : "" })),
-        roster, foot.childNodes.length ? foot : h("div", { style: "height:14px" })));
+        roster, foot.childNodes.length ? foot : h("div", { style: "height:14px" }));
+      more.hidden = !open;
+      var top = h("button", { class: "team-top", type: "button", "aria-expanded": open ? "true" : "false", "aria-controls": "tm-" + t.id, "aria-label": "Ver detalhes do time " + t.name },
+        h("div", { class: "seed num", text: "Vaga " + String(i + 1).padStart(2, "0") + (mine ? " · seu time" : "") }),
+        h("div", { class: "team-tag", text: t.tag }), h("div", { class: "team-name", text: t.name }), h("i", { class: "chev", "aria-hidden": "true" }));
+      top.addEventListener("click", function () { // abre/fecha sem refazer a lista
+        S.open[t.id] = !S.open[t.id]; more.hidden = !S.open[t.id]; card.classList.toggle("open", !!S.open[t.id]); top.setAttribute("aria-expanded", S.open[t.id] ? "true" : "false"); syncToggleAll();
+      });
+      var card = h("article", { class: "team" + (open ? " open" : "") + (prevSeen[t.id] ? "" : " enter") + (S.fresh[t.id] ? " fresh" : ""), style: "--c:" + safeColor(t.color) + ";--i:" + Math.min(i, 10) },
+        top, h("div", { class: "chips" }, h("span", { class: "chip " + (confirmed ? "ok" : "wait"), text: confirmed ? "Confirmado" : "Aguardando" }), h("span", { class: "chip", text: t.rank })), more);
+      box.appendChild(card);
     });
   }
+
+  $("teamsToggle").addEventListener("click", toggleAllTeams);
 
   /* últimas inscrições */
   function renderFeed() {
@@ -948,12 +1002,12 @@ h1 span::after { content: "🎃"; display: inline-block; font-size: .55em; margi
   }
   function bTeam(m, side, br, r) {
     var id = m[side], t = id && br.teams[id];
-    return h("div", { class: "bt" + (!id ? " tbd" : "") + (m.winner && m.winner === id ? " win" : "") + (m.winner && id && m.winner !== id ? " lose" : ""), style: t ? "--c:" + safeColor(t.color) : null },
+    return h("div", { class: "btm" + (!id ? " tbd" : "") + (m.winner && m.winner === id ? " win" : "") + (m.winner && id && m.winner !== id ? " lose" : ""), style: t ? "--c:" + safeColor(t.color) : null },
       h("b", { class: "btag", text: t ? t.tag : "—" }), h("span", { class: "bname", text: t ? t.name : (r === 0 ? "BYE" : "A definir") }));
   }
   function bMatch(m, br, r) {
     var path = "/api/admin/bracket/match/" + m.id;
-    var card = h("div", { class: "match" + (m.live ? " live" : "") + (r > 0 ? " inn" : "") }, m.live ? h("div", { class: "bl" }, h("i", { class: "dot" }), "Ao vivo", (m.streamUrl && /^https:\/\//.test(m.streamUrl)) ? h("a", { class: "bw", href: m.streamUrl, target: "_blank", rel: "noopener noreferrer", text: "Assistir ▸" }) : null) : null, bTeam(m, "a", br, r), bTeam(m, "b", br, r));
+    var card = h("div", { class: "match" + (m.live ? " on-air" : "") + (r > 0 ? " inn" : "") }, m.live ? h("div", { class: "bl" }, h("i", { class: "dot" }), "Ao vivo", (m.streamUrl && /^https:\/\//.test(m.streamUrl)) ? h("a", { class: "bw", href: m.streamUrl, target: "_blank", rel: "noopener noreferrer", text: "Assistir ▸" }) : null) : null, bTeam(m, "a", br, r), bTeam(m, "b", br, r));
     if (S.admin && m.a && m.b) {
       var ctl = h("div", { class: "bctl" });
       if (m.winner) ctl.appendChild(h("button", { class: "btn ghost sm", type: "button", text: "Desfazer resultado", onclick: function () { bAct("POST", path, { winner: null }, "Resultado desfeito.", m.id + "u"); } }));
