@@ -444,6 +444,12 @@ html:has(dialog[open]) { overflow: hidden; }
 .rl-sec ul.rl-x { list-style: "❌  "; }
 .rl-sec ul.rl-org li { display: inline-block; margin: 4px 6px 4px 0; padding: 6px 12px; border: 1px solid var(--edge); background: var(--panel-2); font: 700 .95rem/1 var(--f-label); letter-spacing: .06em; }
 @media (max-width: 520px) { .rl-dlg { max-height: 92vh; } .rl-head, .rl-body { padding-inline: 14px; } }
+
+/* criadoras: linha discreta no topo */
+.follow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-top: 14px; animation: rise .7s var(--ease) .74s backwards; }
+.follow-l { font: 700 .78rem/1 var(--f-label); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+.follow-c { font: 600 .85rem/1 var(--f-label); letter-spacing: .03em; color: var(--text); padding: 6px 9px; border: 1px solid var(--edge); background: rgba(23,35,64,.55); }
+.follow-c:hover { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -477,6 +483,7 @@ html:has(dialog[open]) { overflow: hidden; }
         <span class="ban-chip">XIM proibido</span>
         <span class="ban-chip">Seguir as criadoras é obrigatório</span>
       </div>
+      <div class="follow" aria-label="Criadoras que você precisa seguir"><span class="follow-l">Siga</span><span class="follow-c">@Ashranomori</span><span class="follow-c">@Kkatyzi</span><span class="follow-c">@Lubizitta</span><span class="follow-c">@Luritomie</span><span class="follow-c">@YukinaTanemura</span></div>
     </div>
     <aside class="board" aria-label="Vagas">
       <div class="board-head">
