@@ -416,6 +416,34 @@ button.team-top:focus-visible { outline: 3px solid var(--accent); outline-offset
   .team-top .chev { right: 10px; }
   .team .chips { padding: 10px 12px 12px; }
 }
+
+/* regulamento completo: só abre pelo botão */
+.rules-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--edge); color: var(--text); font: 700 .8rem/1 var(--f-label); letter-spacing: .14em; text-transform: uppercase; padding: 9px 14px; cursor: pointer; transition: border-color .2s, color .2s, transform .2s var(--ease, ease); }
+.rules-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+html:has(dialog[open]) { overflow: hidden; }
+.rl-dlg { width: min(760px, calc(100% - 24px)); max-height: min(88vh, 900px); padding: 0; margin: auto; background: var(--panel); color: var(--text); border: 1px solid var(--edge); border-left: 4px solid var(--accent); overflow: hidden; flex-direction: column; }
+.rl-dlg[open] { display: flex; animation: rlIn .35s var(--ease, ease) both; }
+.rl-dlg::backdrop { background: rgba(5, 8, 18, .82); backdrop-filter: blur(4px); }
+@keyframes rlIn { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
+.rl-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid var(--edge); background: var(--panel-2); flex: none; }
+.rl-kicker { font: 700 .75rem/1 var(--f-label); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.rl-head h2 { margin: 0; font: 800 clamp(1.5rem, 4vw, 2rem)/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+.rl-close { flex: none; width: 38px; height: 38px; border: 1px solid var(--edge); background: transparent; color: var(--text); font-size: 1rem; cursor: pointer; transition: border-color .2s, color .2s; }
+.rl-close:hover { border-color: var(--bad); color: var(--bad); }
+.rl-body { overflow-y: auto; padding: 18px 20px 26px; overscroll-behavior: contain; }
+.rl-tag { margin: 0 0 6px; font: 700 1.1rem/1.3 var(--f-label); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.rl-intro { margin: 0 0 8px; color: var(--muted); }
+.rl-sec { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--edge); }
+.rl-sec h3 { margin: 0 0 10px; font: 700 1.15rem/1.2 var(--f-label); letter-spacing: .08em; text-transform: uppercase; }
+.rl-n { display: inline-block; min-width: 2ch; margin-right: 8px; padding: 3px 7px; background: var(--accent); color: var(--accent-ink); font-size: .85rem; letter-spacing: .04em; }
+.rl-sec p { margin: 10px 0; }
+.rl-sec ul { margin: 8px 0; padding-left: 20px; }
+.rl-sec li { margin: 6px 0; }
+.rl-sec ul.rl-plain, .rl-sec ul.rl-org { list-style: none; padding-left: 0; }
+.rl-sec ul.rl-x li::marker { color: var(--bad); }
+.rl-sec ul.rl-x { list-style: "❌  "; }
+.rl-sec ul.rl-org li { display: inline-block; margin: 4px 6px 4px 0; padding: 6px 12px; border: 1px solid var(--edge); background: var(--panel-2); font: 700 .95rem/1 var(--f-label); letter-spacing: .06em; }
+@media (max-width: 520px) { .rl-dlg { max-height: 92vh; } .rl-head, .rl-body { padding-inline: 14px; } }
 </style>
 </head>
 <body>
@@ -432,7 +460,7 @@ button.team-top:focus-visible { outline: 3px solid var(--accent); outline-offset
 <div class="wrap">
   <header class="bar">
     <div class="brand"><span aria-hidden="true">🎃</span>Spookywatch</div>
-    <div class="bar-r"><div class="live label" id="presence"><span class="dot" id="presenceDot"></span><span id="presenceTxt">Ao vivo</span></div><div class="who-chip" id="whoChip" hidden><span id="whoTxt"></span><button class="linkbtn" id="logoutBtn" type="button">Sair</button></div><a class="dc-top" href="https://discord.gg/Zu63wCXgyM" target="_blank" rel="noopener noreferrer" aria-label="Entrar no servidor do Discord"><span class="dc-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H11l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="8" cy="11.5" r="1.3" fill="currentColor"/><circle cx="12" cy="11.5" r="1.3" fill="currentColor"/><circle cx="16" cy="11.5" r="1.3" fill="currentColor"/></svg><img src="discord-logo.svg" alt="" hidden onload="this.hidden=false;this.parentNode.classList.add('has-logo')" onerror="this.remove()"></span><span>Discord</span></a></div>
+    <div class="bar-r"><button class="rules-btn" type="button" data-open-rules>📜 Regulamento</button><div class="live label" id="presence"><span class="dot" id="presenceDot"></span><span id="presenceTxt">Ao vivo</span></div><div class="who-chip" id="whoChip" hidden><span id="whoTxt"></span><button class="linkbtn" id="logoutBtn" type="button">Sair</button></div><a class="dc-top" href="https://discord.gg/Zu63wCXgyM" target="_blank" rel="noopener noreferrer" aria-label="Entrar no servidor do Discord"><span class="dc-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H11l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="8" cy="11.5" r="1.3" fill="currentColor"/><circle cx="12" cy="11.5" r="1.3" fill="currentColor"/><circle cx="16" cy="11.5" r="1.3" fill="currentColor"/></svg><img src="discord-logo.svg" alt="" hidden onload="this.hidden=false;this.parentNode.classList.add('has-logo')" onerror="this.remove()"></span><span>Discord</span></a></div>
   </header>
 
   <div class="livebar" id="liveBar" role="status" aria-live="polite" hidden></div>
@@ -506,6 +534,7 @@ button.team-top:focus-visible { outline: 3px solid var(--accent); outline-offset
             <li><b>Contas</b><span>Cada BattleTag entra em um único time.</span></li>
             <li><b>Capitão</b><span>Quem inscreve o time é chamado pelo @ do Discord informado.</span></li>
           </ul>
+          <button class="btn ghost sm" type="button" data-open-rules style="margin-top:14px">Ler regulamento completo</button>
         </div>
       </section>
     </aside>
@@ -563,6 +592,18 @@ button.team-top:focus-visible { outline: 3px solid var(--accent); outline-offset
 <button class="music" id="musicBtn" type="button" aria-pressed="false" aria-label="Música de fundo"><i aria-hidden="true">🎃</i><span>Música</span></button>
 <div class="toast" id="toast" role="status"></div>
 
+
+<dialog class="rl-dlg" id="rulesDlg" aria-labelledby="rlTitle">
+  <div class="rl-head">
+    <div><div class="rl-kicker">Regulamento oficial</div><h2 id="rlTitle">Campeonato Spookywatch</h2></div>
+    <button class="rl-close" id="rlClose" type="button" aria-label="Fechar regulamento">✕</button>
+  </div>
+  <div class="rl-body" id="rlBody">
+    <p class="rl-tag">👻 Gostosuras, travessuras ou campeonato?</p>
+    <p class="rl-intro">Este regulamento contém todas as informações necessárias para a participação no campeonato. Leia atentamente antes de realizar sua inscrição.</p>
+    <section class="rl-sec"><h3><span class="rl-n">01</span>🕸️ Informações gerais</h3><ul class="rl-plain"><li>🎮 Jogo: Overwatch</li><li>🏆 Formato: 5v5</li><li>📅 Data: 31 de outubro</li><li>🕐 Horário: 18:00 (horário de Brasília)</li><li>⚔️ Sistema: Eliminação simples</li><li>🏆 Premiação: R$ 50 em gift card para cada membro da equipe</li></ul><p>A organização poderá realizar alterações de horários ou formato em situações excepcionais, comunicando os participantes previamente sempre que possível.</p></section><section class="rl-sec"><h3><span class="rl-n">02</span>👥 Inscrição e formação das equipes</h3><ul><li>Cada equipe deverá ser formada por 5 jogadores titulares e 1 reserva opcional.</li><li>Apenas um jogador com elo Mestre 5 ou superior por equipe.</li><li>Cada equipe tem direito a um jogador reserva, além dos 5 titulares.</li><li>O reserva participará do campeonato apenas se um dos 5 titulares não puder comparecer, tornando a substituição permanente.</li><li>Em caso de premiação para equipe com substituição, o jogador substituído perde o direito ao prêmio, e o reserva passa a ter direito à premiação.</li><li>Cada jogador poderá participar de apenas uma equipe.</li><li>As informações fornecidas no formulário de inscrição pelos jogadores deverão ser verdadeiras.</li><li>O capitão será o principal responsável pela comunicação entre a equipe e a organização.</li><li>Após o encerramento das inscrições, alterações na escalação só poderão ser realizadas com autorização da organização.</li><li>É necessário seguir todas as organizadoras do evento para participar.</li><li>Toda e qualquer inscrição deve ser realizada até às 23:59 de Sábado, 24/10. Inscrições realizadas após esta data serão ignoradas. Não haverá exceções.</li><li>O sorteio do chaveamento e das equipes aleatórias formadas por jogadores sozinhos serão divulgados na Segunda-Feira, 26/10.</li></ul></section><section class="rl-sec"><h3><span class="rl-n">03</span>🎮 Formato das partidas</h3><p>Formato das séries:</p><ul><li>As equipes serão sorteadas</li><li>As partidas serão realizadas no formato Competitivo 5v5: 1 Tank; 2 DPS; 2 Suportes.</li></ul><p>A equipe que atingir o número necessário de vitórias avançará para a próxima fase:</p><ul><li>Todas as partidas das Oitavas de Final, Quartas de Final e Semifinal serão melhor de 3 (md3);</li><li>A equipe que vencer 2 partidas na disputa avança para a próxima fase;</li><li>A final será melhor de 5 (md5);</li><li>A equipe que vencer 3 partidas na final será a campeã do campeonato.</li></ul></section><section class="rl-sec"><h3><span class="rl-n">04</span>⏰ Horários e atrasos</h3><ul><li>Todos os jogadores deverão estar disponíveis pelo menos 30 minutos antes do horário marcado para sua partida.</li><li>A tolerância para atraso será de 10 minutos.</li><li>Caso uma equipe não esteja completa após o período de tolerância, a organização poderá aplicar W.O.</li><li>Problemas ou imprevistos devem ser comunicados à organização o mais rápido possível.</li></ul></section><section class="rl-sec"><h3><span class="rl-n">05</span>🚫 Proibições</h3><p>É expressamente proibido:</p><ul class="rl-x"><li>Utilizar cheats, hacks, xim ou programas que ofereçam vantagem indevida;</li><li>Compartilhar contas;</li><li>Utilizar informações externas para obter vantagem durante a partida;</li><li>Manipular resultados;</li><li>Combinar resultados entre equipes;</li><li>Utilizar qualquer método que prejudique intencionalmente a experiência dos demais participantes.</li></ul><p>O descumprimento dessas regras poderá resultar em advertência, derrota na partida ou até desclassificação da equipe, dependendo da gravidade.</p></section><section class="rl-sec"><h3><span class="rl-n">06</span>🗣️ Conduta dos participantes</h3><p>Todos os participantes deverão manter uma postura respeitosa durante o campeonato.</p><p>Não serão tolerados:</p><ul class="rl-x"><li>Racismo;</li><li>Homofobia;</li><li>Transfobia;</li><li>Xenofobia;</li><li>Sexismo;</li><li>Discurso de ódio;</li><li>Assédio;</li><li>Ameaças;</li><li>Perseguição ou provocação excessiva;</li><li>Ofensas direcionadas a participantes ou membros da organização.</li></ul><p>Trash talk saudável pode fazer parte da competição, mas não deverá ultrapassar os limites do respeito.</p><p>A organização poderá aplicar punições de acordo com a gravidade da situação.</p></section><section class="rl-sec"><h3><span class="rl-n">07</span>📺 Stream sniping</h3><p>Caso as partidas sejam transmitidas ao vivo, é proibido utilizar as transmissões para obter informações que proporcionem vantagem competitiva.</p><p>Isso inclui, mas não se limita a:</p><ul><li>Assistir à transmissão do próprio confronto enquanto joga;</li><li>Utilizar informações fornecidas pela transmissão;</li><li>Pedir para terceiros acompanharem a live e transmitirem informações da partida.</li></ul><p>A identificação de tentativa de stream sniping poderá resultar em punição ou desclassificação.</p></section><section class="rl-sec"><h3><span class="rl-n">08</span>🎥 Transmissão e divulgação</h3><p>As partidas poderão ser transmitidas pela organização ou por criadores autorizados.</p><p>Ao participar do campeonato, o jogador declara estar ciente de que:</p><ul><li>Seu nick poderá aparecer nas transmissões;</li><li>O nome da equipe poderá ser utilizado nas divulgações;</li><li>Resultados poderão ser publicados;</li><li>Clipes e melhores momentos das partidas poderão ser utilizados para divulgação do campeonato;</li><li>Prints e registros das partidas poderão ser utilizados nas redes sociais do evento.</li></ul></section><section class="rl-sec"><h3><span class="rl-n">09</span>📸 Provas e denúncias</h3><p>Caso uma equipe queira denunciar uma situação irregular, deverá entrar em contato com a organização através do Discord.</p><p>Sempre que possível, a denúncia deverá conter:</p><ul><li>Nome da equipe;</li><li>Jogadores envolvidos;</li><li>Partida/confronto;</li><li>Descrição do ocorrido;</li><li>Prints, vídeos ou outras evidências.</li></ul><p>A organização analisará as informações antes de tomar uma decisão.</p></section><section class="rl-sec"><h3><span class="rl-n">10</span>🏆 Premiação</h3><p>Será considerada CAMPEÃ a equipe que ganhar 3 partidas na FINAL.</p><ul><li>Apenas a equipe CAMPEÃ será premiada.</li><li>Cada integrante titular da equipe CAMPEÃ receberá 1 (um) Gift Card de R$50,00 (cinquenta reais).</li><li>Um total de 5 (cinco) gift cards.</li><li>Caso um dos jogadores titulares seja substituído pelo reserva, o titular que foi substituído perderá o direito ao seu prêmio, e o reserva passa a ter direito à premiação.</li><li>A organização se reserva ao direito de realizar a entrega da premiação em até 7 (sete) dias úteis após a finalização do campeonato.</li><li>Um membro da organização entrará em contato com o capitão da equipe CAMPEÃ dentro deste período para resolver a premiação.</li><li>Caso alguma irregularidade relacionada a equipe CAMPEÃ seja encontrada antes da premiação ser entregue à equipe, a Organização se reserva ao direito de não premiar a equipe CAMPEÃ.</li><li>Neste caso, a equipe derrotada na FINAL será considerada CAMPEÃ, passando a ter direito à premiação.</li></ul></section><section class="rl-sec"><h3><span class="rl-n">11</span>🎃 Espírito do campeonato</h3><p>Este campeonato foi criado para proporcionar uma experiência competitiva, divertida e saudável para a comunidade de Overwatch.</p><p>Respeite seus adversários, sua equipe e a organização.</p><p>Jogue limpo, divirta-se e dê o seu melhor. 👻</p></section><section class="rl-sec"><h3><span class="rl-n">12</span>👑 Disposições finais</h3><p>Ao realizar a inscrição, todos os participantes declaram que:</p><ul class="rl-plain"><li>☑️ Leram e compreenderam este regulamento;</li><li>☑️ Concordam com as regras do campeonato;</li><li>☑️ Comprometem-se a respeitar os demais participantes;</li><li>☑️ Comprometem-se a seguir as decisões da organização;</li><li>☑️ Estão cientes das possíveis punições em caso de descumprimento das regras.</li></ul></section><section class="rl-sec"><h3><span class="rl-n">13</span>🌟 A organização</h3><p>Lembre-se que as inscrições só serão válidas caso todos os integrantes da equipe estejam seguindo as nossas organizadoras. A nossa plataforma principal é a Twitch, mas as inscrições também serão válidas caso optem por nos seguirem em outras plataformas como TikTok ou YouTube.</p><ul class="rl-org"><li>Ashranomori</li><li>Kkatyzi</li><li>Lubizitta</li><li>Luritomie</li><li>YukinaTanemura</li></ul><p>BOA SORTE!</p></section>
+  </div>
+</dialog>
 <script>
 (function () {
   "use strict";
@@ -1161,6 +1202,23 @@ button.team-top:focus-visible { outline: 3px solid var(--accent); outline-offset
   document.addEventListener("pointerdown", first); document.addEventListener("keydown", first);
   document.addEventListener("visibilitychange", function () { if (!ac || !on) return; if (document.hidden) ac.suspend(); else ac.resume(); });
   setBtn();
+})();
+
+/* regulamento completo em janela, aberto por botão ou por #regulamento */
+(function () {
+  var dlg = document.getElementById("rulesDlg");
+  if (!dlg) return;
+  function open() {
+    if (dlg.open) return;
+    try { dlg.showModal(); } catch (e) { dlg.setAttribute("open", ""); }
+    var b = document.getElementById("rlBody"); if (b) b.scrollTop = 0;
+  }
+  function close() { try { dlg.close(); } catch (e) { dlg.removeAttribute("open"); } if (location.hash === "#regulamento") history.replaceState(null, "", location.pathname + location.search); }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-open-rules]"), function (b) { b.addEventListener("click", open); });
+  document.getElementById("rlClose").addEventListener("click", close);
+  dlg.addEventListener("click", function (e) { if (e.target === dlg) close(); });
+  if (location.hash === "#regulamento") open();
+  window.addEventListener("hashchange", function () { if (location.hash === "#regulamento") open(); });
 })();
 </script>
 </body>
